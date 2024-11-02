@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true }); // Important to merge params from the parent route
 const User = require("../models/user");
+const { jwtAuthMiddleware, generateToken } = require("../utils/jwt");
 // const Conference = require('../models/conference');
 
 // POST route to add a person
