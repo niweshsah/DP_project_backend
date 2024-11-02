@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 
 // Create a new conference
-router.post('/conferences', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const conference = new Conference(req.body);
     await conference.save();
@@ -25,20 +25,12 @@ router.post('/conferences', async (req, res) => {
   }
 });
 
-// Get all conferences
-router.get('/conferences', async (req, res) => {
-  try {
-    const conferences = await Conference.find();
-    res.status(200).json(conferences);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
-// Get a specific conference by ID
-router.get('/conferences/:id', async (req, res) => {
+
+// Get a specific conference by conferenceId
+router.get('/:conferenceId', async (req, res) => {
   try {
-    const conference = await Conference.findById(req.params.id);
+    const conference = await Conference.findById(req.params.conferenceId);
     if (!conference) {
       return res.status(404).json({ error: 'Conference not found' });
     }
@@ -48,10 +40,12 @@ router.get('/conferences/:id', async (req, res) => {
   }
 });
 
-// Update a conference by ID
-router.put('/conferences/:id', async (req, res) => {
+
+
+// Update a conference by conferenceId
+router.put('/:conferenceId', async (req, res) => {
   try {
-    const conference = await Conference.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const conference = await Conference.findByIdAndUpdate(req.params.conferenceId, req.body, { new: true, runValconferenceIdators: true });
     if (!conference) {
       return res.status(404).json({ error: 'Conference not found' });
     }
@@ -61,10 +55,10 @@ router.put('/conferences/:id', async (req, res) => {
   }
 });
 
-// Delete a conference by ID
-router.delete('/conferences/:id', async (req, res) => {
+// Delete a conference by conferenceId
+router.delete('/:conferenceId', async (req, res) => {
   try {
-    const conference = await Conference.findByIdAndDelete(req.params.id);
+    const conference = await Conference.findByIdAndDelete(req.params.conferenceId);
     if (!conference) {
       return res.status(404).json({ error: 'Conference not found' });
     }
@@ -76,10 +70,10 @@ router.delete('/conferences/:id', async (req, res) => {
 
 
 const AttendeeRoute = require('../routes/attendeeRoute');
-router.use('/attendees', AttendeeRoute);
+router.use('/:conferenceId/attendees', AttendeeRoute);
 
 const EventRoute = require('../routes/eventRoute');
-router.use('/events', EventRoute);
+router.use('/:conferenceId/events', EventRoute);
 
 
 module.exports = router;

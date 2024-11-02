@@ -56,7 +56,7 @@ const AttendeeSchema = new Schema({
       // Removed conferenceId since it becomes the key of the Map
       lastdateAndTimeUsed: {
         type: Date,
-        // default: "2000-1-1T00:00:00.000Z", // ISO date string
+        default: "2000-1-1T00:00:00.000Z", // ISO date string
       },
       resetTimeInMinutes: { type: Number, default: 180 },
       alcohol: { type: Boolean, default: false },

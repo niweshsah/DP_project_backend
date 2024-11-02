@@ -5,7 +5,7 @@
 
 const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
-const Attendee = require("./models/attendees"); // Adjust the path as necessary
+const Attendee = require("../models/attendee"); // Adjust the path as necessary
 require("dotenv").config(); // To use environment variables from the .env file
 
 
@@ -56,9 +56,11 @@ async function sendQRCodeEmail(attendee) {
 
 
 // Function to send QR codes to all attendees
-async function sendQRCodesToAllAttendees() {
+async function sendQRCodesToAllAttendees(attendees_id) {
   try {
-    const attendees = await Attendee.find({}); // Fetch all attendees from the database
+    const attendees = await Attendee.find({ _id: { $in: attendees_id } });
+
+    // const attendees = await Attendee.find({}); // Fetch all attendees from the database
     for (const attendee of attendees) {
       await sendQRCodeEmail(attendee); // Send an email to each attendee
     }
@@ -66,6 +68,8 @@ async function sendQRCodesToAllAttendees() {
     console.error("Error fetching attendees or sending emails:", error);
   }
 }
+
+
 
 // Export the functions to be used elsewhere
 module.exports = { sendQRCodeEmail, sendQRCodesToAllAttendees };

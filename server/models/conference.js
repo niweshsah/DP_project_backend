@@ -18,6 +18,7 @@ const ConferenceSchema = new Schema({
   location: {
     type: String,
     required: true,
+    default: "IIT Mandi",
   },
   events: {
     type: [Schema.Types.ObjectId],  // References to event objects

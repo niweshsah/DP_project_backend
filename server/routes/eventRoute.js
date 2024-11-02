@@ -1,5 +1,7 @@
 const express = require('express');
-const router = express.Router();
+// const router = express.Router();
+const router = express.Router({ mergeParams: true }); // Important to merge params from the parent route
+
 const Event = require('../models/event'); // Adjust the path as necessary
 
 // Create a new event
