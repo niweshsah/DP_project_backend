@@ -1,1 +1,38 @@
+name: event_management_app
+description: A Flutter app for managing events.
 
+publish_to: 'none' # Remove this line if you intend to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0" # Updated to reflect the minimum SDK for null safety
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.2           # For making HTTP requests
+  provider: ^6.0.0       # For state management
+  flutter_localizations: # For localization support
+    sdk: flutter
+  shared_preferences: ^2.0.6 # For storing user preferences
+  font_awesome_flutter: ^10.0.0 # For using Font Awesome icons
+  google_fonts: ^6.2.1        # For using Google Fonts
+  dio: ^5.0.0                 # Alternative for HTTP requests with more features
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/           # Ensure this directory exists
+    - assets/icons/            # Ensure this directory exists
+
+# Optional: Add a section for fonts if you have custom fonts
+fonts:
+  - family: YourCustomFontName
+    fonts:
+      - asset: assets/fonts/YourCustomFont.ttf
