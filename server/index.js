@@ -13,9 +13,10 @@ app.get('/', (req, res) => {
   res.send('DP project is running!');
 });
 
-const conferenceRoutes = require('./routes/conferenceRoute'); // Import the conference route
-app.use('/conferences', conferenceRoutes); // use the conferenceRoutes
+const userRoutes = require('./routes/userRoute'); // Import the conference route
+app.use('/user', userRoutes); // use the conferenceRoutes
 
+// const 
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

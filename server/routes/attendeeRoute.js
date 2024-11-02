@@ -6,8 +6,14 @@ const Attendee = require("../models/attendee"); // Import the Attendee model
 const Conference = require("../models/conference"); // Import the Conference model
 // const multer = require('multer');
 const upload = require("../models/attendee").upload; // Import the multer setup from the Attendee model
+const User = require("../models/user");
 
-const { sendQRCodeEmail, sendQRCodesToAllAttendees } = require("../utils/sendEmail");
+const { jwtAuthMiddleware, generateToken } = require("../utils/jwt");
+
+const {
+  sendQRCodeEmail,
+  sendQRCodesToAllAttendees,
+} = require("../utils/sendEmail");
 
 router.get("/test", async (req, res) => {
   try {
@@ -240,7 +246,6 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-
 // you will get error on doing router.get because we are not sending any response
 // Send email to all attendees of the conference
 router.post("/sendEmails", async (req, res) => {
@@ -256,7 +261,7 @@ router.post("/sendEmails", async (req, res) => {
     //   "conferenceAttendance.conferenceId": conferenceId,
     // });
 
-    const attendees_id =  Array.from(conference.attendees.keys());
+    const attendees_id = Array.from(conference.attendees.keys());
     // console.log(attendees_id);
 
     if (attendees_id.length === 0) {
@@ -269,7 +274,37 @@ router.post("/sendEmails", async (req, res) => {
 
     res.status(200).json({ message: "Emails sent to all attendees" });
   } catch (error) {
-    res.status(500).json({ error: error.message , message: "Error sending emails"});
+    res
+      .status(500)
+      .json({ error: error.message, message: "Error sending emails" });
+  }
+});
+
+// POST route to add a person
+router.post("/signup", async (req, res) => {
+  try {
+    const data = req.body; // Assuming the request body contains the person data
+
+    // Create a new Person document using the Mongoose model
+    const newUser = new User(data);
+
+    // Save the new person to the database
+    const response = await newUser.save();
+    console.log("data saved");
+
+    const payload = {
+      id: response.id,
+      username: response.username,
+    };
+
+    console.log(JSON.stringify(payload));
+    const token = generateToken(payload);
+    console.log("Token is : ", token);
+
+    res.status(200).json({ response: response, token: token });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
