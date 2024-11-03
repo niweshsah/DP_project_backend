@@ -24,23 +24,58 @@ const transporter = nodemailer.createTransport({
 
 
 // Function to send QR code to an attendee
+// async function sendQRCodeEmail(attendee) {
+//   try {
+//     // Generate QR code for attendee’s secret QR string
+//     const qrCodeData = await QRCode.toDataURL(attendee.secretQRSTring);
+
+//     // Email configuration
+//     const mailOptions = {
+//       from: "sahniwesh@gmail.com", // Sender address
+//       to: attendee.email, // Receiver's email
+//       subject: "Your QR Code for the Event",
+//       html: `
+//         <p>Hi ${attendee.name},</p>
+//         <p>Thank you for registering for the event. Please find your unique QR code attached below.</p>
+//         <img src="${qrCodeData}" alt="QR Code">
+//         <p>Show this code at the entrance to verify your attendance.</p>
+//         <p>Best regards,<br/>Event Team</p>
+//       `,
+//     };
+
+//     // Send the email
+//     await transporter.sendMail(mailOptions);
+//     console.log(`QR code email sent to ${attendee.email}`);
+//   } catch (error) {
+//     console.error(`Error sending email to ${attendee.email}:`, error);
+//   }
+// }
+
+
+
 async function sendQRCodeEmail(attendee) {
   try {
-    // Generate QR code for attendee’s secret QR string
-    const qrCodeData = await QRCode.toDataURL(attendee.secretQRSTring);
+    // Generate QR code as a buffer
+    const qrCodeBuffer = await QRCode.toBuffer(attendee.secretQRSTring);
 
     // Email configuration
     const mailOptions = {
       from: "sahniwesh@gmail.com", // Sender address
       to: attendee.email, // Receiver's email
-      subject: "Your QR Code for the Event",
+      subject: "Your QR Code for the Conference",
       html: `
         <p>Hi ${attendee.name},</p>
-        <p>Thank you for registering for the event. Please find your unique QR code attached below.</p>
-        <img src="${qrCodeData}" alt="QR Code">
+        <p>We humbly invite you to our conference. Please find your unique QR code attached below.</p>
         <p>Show this code at the entrance to verify your attendance.</p>
-        <p>Best regards,<br/>Event Team</p>
+        <p>Best regards,<br/>GatherHub Team</p>
       `,
+      attachments: [
+        {
+          filename: 'QRCode.png',
+          content: qrCodeBuffer,
+          contentType: 'image/png',
+        },
+      ],
     };
 
     // Send the email
@@ -50,9 +85,6 @@ async function sendQRCodeEmail(attendee) {
     console.error(`Error sending email to ${attendee.email}:`, error);
   }
 }
-
-
-
 
 
 // Function to send QR codes to all attendees

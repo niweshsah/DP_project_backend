@@ -61,6 +61,8 @@ router.post("/", upload.single("photo"), async (req, res) => {
   }
 });
 
+
+
 // register attendee for a conference
 router.get("/:attendeeId/registerForConference", async (req, res) => {
   try {
@@ -96,6 +98,8 @@ router.get("/:attendeeId/registerForConference", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+
 
 // mark their attendance at a conference
 router.post("/:attendeeId/markConferenceAttendance", async (req, res) => {
@@ -137,6 +141,7 @@ router.post("/:attendeeId/markConferenceAttendance", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 // Get all attendees of that conference
 router.get("/", async (req, res) => {

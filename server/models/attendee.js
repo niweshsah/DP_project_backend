@@ -23,18 +23,22 @@ const AttendeeSchema = new Schema({
   about: {
     type: String,
   },
-  conferenceAttendance: [
-    {
-      conference: { type: mongoose.Schema.Types.ObjectId, ref: "Conference" },
+  conferenceAttendance: {
+    type: Map, // conference is the key here
+    of: {
+      // eventId: { type: mongoose.Schema.Types.ObjectId, ref: "conference" },
       timeIn: { type: Date },
     },
-  ],
-  eventsAttended: [
-    {
-      eventId: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
+  },
+
+  eventsAttended: {
+    type: Map, // Event is the key here
+    of: {
+      // eventId: { type: mongoose.Schema.Types.ObjectId, ref: "Event" },
       timeIn: { type: Date },
     },
-  ],
+  },
+
   // foodCouponUsed: [
   //   {
   //     conferenceId: {

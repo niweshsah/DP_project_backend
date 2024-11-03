@@ -28,6 +28,7 @@ const EventSchema = new Schema({
       },
     }),
   },
+  
   attendees: {
     type: Map,
     of: new Schema({
