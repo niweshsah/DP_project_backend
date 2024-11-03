@@ -7,27 +7,17 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
-  String _username = '';
-  String _email = '';
-  String _password = '';
-  String _confirmPassword = '';
-  bool _obscureText = true; // To toggle password visibility
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   void _register() {
     if (_formKey.currentState!.validate()) {
-      // Perform registration action
-      // For example, you can call an API or navigate to another screen
-      print('Username: $_username');
-      print('Email: $_email');
-      print('Password: $_password');
-
-      // Show success message
+      // Handle registration logic here
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration successful!')),
       );
-
-      // Navigate to home page or show a success message
-      // Navigator.pushReplacementNamed(context, '/home'); // Example navigation
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
@@ -36,114 +26,80 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Register'),
+        backgroundColor: Colors.red, // Optional: Change AppBar color
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus(); // Dismiss the keyboard
-          },
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your username';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _username = value;
-                    });
-                  },
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background Image
+          Image.asset(
+            'assets/images/backgroundimage2.jpg', // Path to your background image
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Center(
+                child: Text(
+                  'Image not available',
+                  style: TextStyle(color: Colors.white),
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
+              );
+            },
+          ),
+          // Semi-transparent overlay for readability
+          Container(
+            color: Colors.white.withOpacity(0.5), // Dark overlay for better text visibility
+          ),
+          // Registration form
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      fillColor: Colors.white.withOpacity(0.8),
+                      filled: true,
+                    ),
+                    validator: (value) => value!.isEmpty ? 'Enter a username' : null,
                   ),
-                  keyboardType: TextInputType.emailAddress, // Email keyboard type
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    // Simple email validation
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _email = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      fillColor: Colors.white.withOpacity(0.8),
+                      filled: true,
+                    ),
+                    validator: (value) => value!.isEmpty ? 'Enter an email' : null,
                   ),
-                  obscureText: _obscureText,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _password = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Confirm Password',
-                    border: OutlineInputBorder(),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      fillColor: Colors.white.withOpacity(0.8),
+                      filled: true,
+                    ),
+                    obscureText: true,
+                    validator: (value) => value!.isEmpty ? 'Enter a password' : null,
                   ),
-                  obscureText: _obscureText,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-                    if (value != _password) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _confirmPassword = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: _register,
-                  child: Text('Register'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 36), // Full-width button
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _register,
+                    child: Text('Register'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Optional: Change button color
+                      minimumSize: Size(double.infinity, 36), // Full-width button
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

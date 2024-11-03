@@ -1,5 +1,3 @@
-// lib/screens/login_page.dart
-
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,7 +10,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
   void _login() {
-    // Dummy login logic
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
@@ -25,34 +22,75 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+      appBar: AppBar(
+        title: Text('Login'),
+        backgroundColor: Colors.red, // AppBar color to match red theme
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background Image
+          Image.asset(
+            'assets/images/backgroundimage2.jpg', // Path to your background image in assets
+            fit: BoxFit.cover,
+          ),
+          // Semi-transparent red overlay to tint the background
+          Container(
+            color: Colors.white.withOpacity(0.5),
+          ),
+          // Login form
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(), // Dismiss keyboard on tap outside
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.8),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.8),
+                    ),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _login,
+                    child: Text('Login'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red, // Set button color to red
+                      minimumSize: Size(double.infinity, 36),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    child: Text(
+                      'Create an account',
+                      style: TextStyle(color: Colors.red,fontSize: 20,fontWeight: FontWeight.bold), // Set text color to red
+                    ),
+                  ),
+                ],
+              ),
             ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Login'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/register');
-              },
-              child: Text('Create an account'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
