@@ -1,36 +1,45 @@
 // lib/screens/home_page.dart
 
 import 'package:flutter/material.dart';
-import '../services/api_service.dart';
 import 'event_details_page.dart';
-import '../widgets/event_card.dart';
-import '../models/event.dart';
+import '../models/user.dart';
 
 class HomePage extends StatelessWidget {
-  final ApiService apiService = ApiService();
+  final List<Map<String, String>> events = [
+    {'title': 'Music Concert', 'date': '2024-11-15', 'location': 'Hall A'},
+    {'title': 'Art Exhibition', 'date': '2024-12-01', 'location': 'Gallery'},
+  ];
 
   @override
   Widget build(BuildContext context) {
-    // Fetching the events directly (using mock data)
-    List<Event> events = apiService.fetchEvents();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event Management'),
+        title: Text('Home'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              final user = User(username: 'SampleUser', email: 'user@example.com',password: 'password123');
+              Navigator.pushNamed(context, '/profile', arguments: user);
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: events.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
+          final event = events[index];
+          return ListTile(
+            title: Text(event['title']!),
+            subtitle: Text('${event['date']} - ${event['location']}'),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EventDetailPage(event: events[index]),
+                  builder: (context) => EventDetailsPage(event: event),
                 ),
               );
             },
-            child: EventCard(event: events[index]),
           );
         },
       ),

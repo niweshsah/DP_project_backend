@@ -5,7 +5,7 @@ import 'screens/home_page.dart';
 import 'screens/login_page.dart';
 import 'screens/registration_page.dart';
 import 'screens/user_profile_page.dart';
-import 'models/user.dart'; // Import User model
+import 'models/user.dart';
 import 'utils/constants.dart';
 import 'theme/app_theme.dart';
 
@@ -24,20 +24,17 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => LoginPage(),
         '/register': (context) => RegistrationPage(),
+        '/home': (context) => HomePage(),
       },
       onGenerateRoute: (settings) {
         switch (settings.name) {
-          case '/home':
-            return MaterialPageRoute(
-              builder: (context) => HomePage(),
-            );
           case '/profile':
-            final User user = settings.arguments as User; // Retrieve User object
+            final user = settings.arguments as User;
             return MaterialPageRoute(
-              builder: (context) => UserProfilePage(user: user), // Pass the user object
+              builder: (context) => UserProfilePage(user: user),
             );
           default:
-            return null; // Handle other routes if necessary
+            return null;
         }
       },
     );

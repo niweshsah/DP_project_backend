@@ -1,52 +1,32 @@
 // lib/screens/event_details_page.dart
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // for date formatting
-import '../models/event.dart';
 
-class EventDetailPage extends StatelessWidget {
-  final Event event;
+class EventDetailsPage extends StatelessWidget {
+  final Map<String, String> event;
 
-  const EventDetailPage({Key? key, required this.event}) : super(key: key);
+  EventDetailsPage({required this.event});
 
   @override
   Widget build(BuildContext context) {
-    // Format date and time
-    final String formattedDate = DateFormat.yMMMMd().format(event.date);
-    final String formattedTime = '${event.time.hour}:${event.time.minute.toString().padLeft(2, '0')}';
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(event.title),
-      ),
+      appBar: AppBar(title: Text(event['title']!)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              event.title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text('Date: ${event['date']}', style: TextStyle(fontSize: 18)),
+            Text('Location: ${event['location']}', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('You have registered for the event!')),
+                );
+              },
+              child: Text('Register'),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Date: $formattedDate',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Time: $formattedTime',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              event.description,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            event.imageUrl.isNotEmpty
-                ? Image.network(event.imageUrl)
-                : Container(),
           ],
         ),
       ),
