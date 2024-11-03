@@ -21,14 +21,23 @@ dependencies:
   dio: ^5.0.0                 # Alternative for HTTP requests with more features
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.10.0
   flutter_test:
     sdk: flutter
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.png" # Path to your icon image
+
+
 
 flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/           # Ensure this directory exists
+    - assets/images/backgroundimage.jpg
+    - assets/images/backgroundimage2.jpg
+    # Ensure this directory exists
     - assets/icons/            # Ensure this directory exists
 
 # Optional: Add a section for fonts if you have custom fonts
