@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'event_details_page.dart';
 import '../models/user.dart';
+import 'attendees_page.dart'; // New import for attendees page
 
 class HomePage extends StatelessWidget {
   final List<Map<String, String>> events = [
@@ -19,7 +20,7 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
-              final user = User(username: 'SampleUser', email: 'user@example.com',password: 'password123');
+              final user = User(username: 'SampleUser', email: 'user@example.com', password: 'password123');
               Navigator.pushNamed(context, '/profile', arguments: user);
             },
           ),
@@ -29,17 +30,32 @@ class HomePage extends StatelessWidget {
         itemCount: events.length,
         itemBuilder: (context, index) {
           final event = events[index];
-          return ListTile(
-            title: Text(event['title']!),
-            subtitle: Text('${event['date']} - ${event['location']}'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EventDetailsPage(event: event),
-                ),
-              );
-            },
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: ListTile(
+              title: Text(event['title']!),
+              subtitle: Text('${event['date']} - ${event['location']}'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventDetailsPage(event: event),
+                  ),
+                );
+              },
+              trailing: IconButton(
+                icon: Icon(Icons.people),
+                tooltip: 'View Attendees',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AttendeesPage(eventTitle: event['title']!),
+                    ),
+                  );
+                },
+              ),
+            ),
           );
         },
       ),
