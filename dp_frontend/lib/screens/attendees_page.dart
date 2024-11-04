@@ -24,6 +24,7 @@ class _AttendeesPageState extends State<AttendeesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.eventTitle} Attendees'),
+        backgroundColor: Colors.red,
       ),
       body: ListView.builder(
         itemCount: attendees.length,

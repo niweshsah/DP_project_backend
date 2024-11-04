@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.red, // Set AppBar color to red
         actions: [
           IconButton(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person,),
             onPressed: () {
               final user = User(username: 'SampleUser', email: 'user@example.com', password: 'password123');
               Navigator.pushNamed(context, '/profile', arguments: user);
@@ -74,7 +74,7 @@ class HomePage extends StatelessWidget {
                     );
                   },
                   trailing: IconButton(
-                    icon: Icon(Icons.people, color: Colors.blue), // Optional color change
+                    icon: Icon(Icons.people, color: Colors.red), // Optional color change
                     tooltip: 'View Attendees',
                     onPressed: () {
                       Navigator.push(
