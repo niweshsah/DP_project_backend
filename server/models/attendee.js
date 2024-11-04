@@ -102,19 +102,17 @@ const upload = multer({
 // Middleware to generate QR code using bcrypt from mobile number and email
 AttendeeSchema.pre("save", async function (next) {
   if (this.isModified("mobile") || this.isModified("email")) {
-    console.log("Mobile or email modified");
     try {
       const salt = await bcrypt.genSalt(5);
       this.secretQRSTring = await bcrypt.hash(this.mobile + this.email, salt);
-      console.log("QR code generated", this.secretQRSTring); // Log the value
+      console.log("QR code generated");
     } catch (err) {
       return next(err);
     }
-  } else {
-    console.log("No changes detected in mobile or email");
   }
   next();
 });
+
 
 const Attendee = mongoose.model("Attendee", AttendeeSchema); // keep this after the schema is defined
 
