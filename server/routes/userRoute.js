@@ -9,13 +9,17 @@ const { jwtAuthMiddleware, generateToken } = require("../utils/jwt");
 router.post("/signup", async (req, res) => {
   try {
     const data = req.body; // Assuming the request body contains the person data
-
+    passwordLength = data.password.length;
+    if (passwordLength < 6) {
+      return res.status(400).json({ error: "Password length should be greater than 6" });
+    }
     // Create a new Person document using the Mongoose model
     const newUser = new User(data);
 
     // Save the new person to the database
     const response = await newUser.save();
     // console.log("data saved");
+
 
     const payload = {
       id: response.id,
