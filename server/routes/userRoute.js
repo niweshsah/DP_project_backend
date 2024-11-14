@@ -65,7 +65,7 @@ router.post("/login", async (req, res) => {
     const token = generateToken(payload);
 
     // resturn token as response
-    res.json({ token });
+    res.json({ token : token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
