@@ -15,7 +15,7 @@ router.post("/signup", async (req, res) => {
 
     // Save the new person to the database
     const response = await newUser.save();
-    console.log("data saved");
+    // console.log("data saved");
 
     const payload = {
       id: response.id,
@@ -24,7 +24,7 @@ router.post("/signup", async (req, res) => {
 
     console.log(JSON.stringify(payload));
     const token = generateToken(payload);
-    console.log("Token is : ", token);
+    // console.log("Token is : ", token);
 
     res.status(200).json({ response: response, token: token });
   } catch (err) {

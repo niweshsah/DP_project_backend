@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const SlidingImages = require("../models/slidingImages");
+const SlidingImages = require("../models/sliding_images");
 
 router.get("/", async (req, res) => {
   try {
