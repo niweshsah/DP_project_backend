@@ -10,6 +10,7 @@ router.post("/createAccount", async (req, res) => {
   try {
     const data = req.body; // Assuming the request body contains the person data
     passwordLength = data.password.length;
+
     if (passwordLength < 6) {
       return res.status(400).json({ error: "Password length should be greater than 6" });
     }
@@ -21,13 +22,7 @@ router.post("/createAccount", async (req, res) => {
     // console.log("data saved");
 
 
-    const payload = {
-      id: response.id,
-      username: response.username,
-    };
-
-    // console.log(JSON.stringify(payload));
-    const token = generateToken(payload);
+    
     // console.log("Token is : ", token);
 
     res.status(200).json({ response: response, token: token });
@@ -42,6 +37,14 @@ router.post("/login", async (req, res) => {
   try {
     // Extract username and password from request body
     const { username, password } = req.body;
+
+    // const payload = {
+    //   password: response.password,
+    //   username: response.username,
+    // };
+
+    // // console.log(JSON.stringify(payload));
+    // const token = generateToken(payload);
 
     // Find the user by username
     const user = await User.findOne({ username: username });
