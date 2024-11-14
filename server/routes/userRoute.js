@@ -6,7 +6,7 @@ const { jwtAuthMiddleware, generateToken } = require("../utils/jwt");
 // const Conference = require('../models/conference');
 
 // POST route to add a person
-router.post("/signup", async (req, res) => {
+router.post("/createAccount", async (req, res) => {
   try {
     const data = req.body; // Assuming the request body contains the person data
     passwordLength = data.password.length;
