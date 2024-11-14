@@ -25,7 +25,7 @@ router.post("/createAccount", async (req, res) => {
     
     // console.log("Token is : ", token);
 
-    res.status(200).json({ response: response, token: token });
+    res.status(200).json({ response: response });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Internal Server Error in craeting account" });
