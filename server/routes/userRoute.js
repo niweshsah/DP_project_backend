@@ -22,7 +22,7 @@ router.post("/signup", async (req, res) => {
       username: response.username,
     };
 
-    console.log(JSON.stringify(payload));
+    // console.log(JSON.stringify(payload));
     const token = generateToken(payload);
     // console.log("Token is : ", token);
 
@@ -84,7 +84,7 @@ router.get("/profile", jwtAuthMiddleware, async (req, res) => {
 router.get("/userTesting", async (req, res) => {
   try {
     // const users = await User.find();
-    res.status(200).json({ error: "testing" });
+    res.status(200).json({ message: "testing is correct" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
