@@ -34,6 +34,7 @@ const generateToken = (userData) => {
   // }
   // res.json({key:  process.env.JWT_SECRET });
   // Generate a new JWT token using user data
+  console.log(process.env.JWT_SECRET);
   return jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: "1200h" });
 };
 module.exports = { jwtAuthMiddleware, generateToken };
