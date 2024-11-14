@@ -32,7 +32,7 @@ const generateToken = (userData) => {
   // if (!secretKey) {
   //   throw new Error("JWT secret key is not defined");
   // }
-  res.json({key:  process.env.JWT_SECRET });
+  // res.json({key:  process.env.JWT_SECRET });
   // Generate a new JWT token using user data
   return jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: "1200h" });
 };
