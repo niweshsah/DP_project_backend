@@ -49,7 +49,7 @@ router.post("/checkUserName", async (req, res) => {
 
     // If user does not exist or password does not match, return error
     if (user) {
-      return res.status(401).json({ error: "username is already taken" });
+      return res.status(401).json({ error: "username is already taken", user:user });
     }
     return res.status(200).json({ message: "username is available" });
   } catch (err) {
