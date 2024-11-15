@@ -161,6 +161,50 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.put("/markAttendanceByUsername/:username", async (req, res) => {
+  try {
+    // Find attendee by username
+    const attendee = await Attendee.findOne({ username: req.params.username });
+    if (!attendee) {
+      return res.status(404).json({ error: "Attendee not found" });
+    }
+
+    const conferenceId = req.params.conferenceId;
+
+    // Find conference by ID
+    const conference = await Conference.findById(conferenceId);
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    // Check if attendee is registered for the conference
+    if (!attendee.conferenceAttendance.has(conferenceId)) {
+      return res.status(404).json({ error: "Attendee is not registered for the conference" });
+    }
+
+    // Check if the attendee has already attended
+    if (attendee.conferenceAttendance.get(conferenceId).attended) {
+      return res.status(400).json({ error: "Attendee has already attended the conference" });
+    }
+
+    // Mark the attendee as attended
+    attendee.conferenceAttendance.get(conferenceId).attended = true;
+
+    // Optionally update conference record if tracking attendees on that side
+    if (conference.attendees.has(attendee.id)) {
+      conference.attendees.get(attendee.id).attended = true;
+    }
+
+    // Save changes to both attendee and conference
+    await attendee.save();
+    await conference.save();
+
+    res.status(200).json(attendee);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // use foodCoupon
 router.post("/:attendeeId/useFoodCoupon", async (req, res) => {
   try {

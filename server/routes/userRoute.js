@@ -117,6 +117,7 @@ router.post("/login", async (req, res) => {
       linkedIn: user.linkedIn,
     };
     
+    
     const token = generateToken(payload);
 
     // resturn token as response
