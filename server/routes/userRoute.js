@@ -32,7 +32,7 @@ router.post("/createAccount", async (req, res) => {
   }
 });
 
-router.get("/checkUserName", async (req, res) => {
+router.post("/checkUserName", async (req, res) => {
   try {
     const { username } = req.body;
 
