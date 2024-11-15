@@ -58,6 +58,32 @@ router.post("/checkUserName", async (req, res) => {
   }
 });
 
+router.post("/checkEmail", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // const payload = {
+    //   password: response.password,
+    //   username: response.username,
+    // };
+
+    // // console.log(JSON.stringify(payload));
+    // const token = generateToken(payload);
+
+    // Find the user by username
+    const user = await User.findOne({ email: email });
+
+    // If user does not exist or password does not match, return error
+    if (user) {
+      return res.status(401).json({ error: "email is already taken", user:user });
+    }
+    return res.status(200).json({ message: "email is available" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error in checking email" });
+  }
+});
+
 // Login Route
 router.post("/login", async (req, res) => {
   try {
