@@ -32,6 +32,32 @@ router.post("/createAccount", async (req, res) => {
   }
 });
 
+router.get("/checkUserName", async (req, res) => {
+  try {
+    const { username } = req.body;
+
+    // const payload = {
+    //   password: response.password,
+    //   username: response.username,
+    // };
+
+    // // console.log(JSON.stringify(payload));
+    // const token = generateToken(payload);
+
+    // Find the user by username
+    const user = await User.findOne({ username: username });
+
+    // If user does not exist or password does not match, return error
+    if (user) {
+      return res.status(401).json({ error: "username is already taken" });
+    }
+    return res.status(200).json({ message: "username is available" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Login Route
 router.post("/login", async (req, res) => {
   try {
@@ -59,9 +85,11 @@ router.post("/login", async (req, res) => {
 
     // generate Token
     const payload = {
-      id: user.id,
+      name: user.name,
+      email: user.email,
       username: user.username,
     };
+    
     const token = generateToken(payload);
 
     // resturn token as response

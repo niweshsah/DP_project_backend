@@ -9,8 +9,8 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
+    required: false,
+    // unique: true,
     // lowercase: true,
     trim: true,
   },
@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6,
+  },
+  linkedIn: {
+    type: String,
+    required: false,
   },
   createdAt: {
     type: Date,
