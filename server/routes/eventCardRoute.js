@@ -485,7 +485,8 @@ router.get("/mentors", async (req, res) => {
       });
     }
 
-    res.status(200).json({conferenceMentors: conference.mentors});
+    // res.status(200).json({conferenceMentors: conference.mentors});
+    res.status(200).json(conference.mentors);
   } catch (error) {
     res.status(500).json({
       success: false,
