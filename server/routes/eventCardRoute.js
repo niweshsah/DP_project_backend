@@ -88,6 +88,48 @@ router.delete("/:date", async (req, res) => {
   }
 });
 
+
+
+
+router.get("/events", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne
+    ({conferenceCode});
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    res.status(200).json(conference.events);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching events",
+      error: error.message,
+    });
+  }
+}
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Add food item to a conference
 router.post("/food", async (req, res) => {
   try {
