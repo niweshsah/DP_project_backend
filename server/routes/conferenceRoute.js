@@ -151,7 +151,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid password" });
     }
 
-    console.log({ conference: conference });
+    // console.log({ conference: conference });
 
     // // generate Token
     // const payload = {
