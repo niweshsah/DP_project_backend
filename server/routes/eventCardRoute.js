@@ -88,14 +88,10 @@ router.delete("/:date", async (req, res) => {
   }
 });
 
-
-
-
 router.get("/events", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
-    const conference = await Conference.findOne
-    ({conferenceCode});
+    const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
       return res.status(404).json({
@@ -112,23 +108,7 @@ router.get("/events", async (req, res) => {
       error: error.message,
     });
   }
-}
-);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 // Add food item to a conference
 router.post("/food", async (req, res) => {
@@ -246,10 +226,7 @@ router.get("/food", async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      data: conference.food,
-    });
+    res.status(200).json(conference.food);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -462,15 +439,6 @@ router.put("/move-attendee", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
 router.post("/addNewMentor", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
@@ -511,14 +479,10 @@ router.post("/addNewMentor", async (req, res) => {
   }
 });
 
-
-
-
-
 router.get("/mentors", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
-    const conference = await Conference.findOne({conferenceCode});
+    const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
       return res.status(404).json({
@@ -536,10 +500,7 @@ router.get("/mentors", async (req, res) => {
       error: error.message,
     });
   }
-}
-);
-
-
+});
 
 router.post("/deleteMentor", async (req, res) => {
   try {
@@ -558,7 +519,7 @@ router.post("/deleteMentor", async (req, res) => {
     }
 
     // Find the image index in the slidingImages array by name
-    const imageIndex = conference.mentors.findIndex(img => img.name === name);
+    const imageIndex = conference.mentors.findIndex((img) => img.name === name);
 
     if (imageIndex === -1) {
       return res.status(404).json({
@@ -587,15 +548,6 @@ router.post("/deleteMentor", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
-
-
-
-
-
-
 
 router.post("/addNewSponsors", async (req, res) => {
   try {
@@ -636,14 +588,10 @@ router.post("/addNewSponsors", async (req, res) => {
   }
 });
 
-
-
-
-
 router.get("/sponsors", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
-    const conference = await Conference.findOne({conferenceCode});
+    const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
       return res.status(404).json({
@@ -660,12 +608,7 @@ router.get("/sponsors", async (req, res) => {
       error: error.message,
     });
   }
-}
-);
-
-
-
-
+});
 
 router.post("/deleteSponsor", async (req, res) => {
   try {
@@ -684,7 +627,9 @@ router.post("/deleteSponsor", async (req, res) => {
     }
 
     // Find the image index in the slidingImages array by name
-    const imageIndex = conference.sponsors.findIndex(img => img.name === name);
+    const imageIndex = conference.sponsors.findIndex(
+      (img) => img.name === name
+    );
 
     if (imageIndex === -1) {
       return res.status(404).json({
@@ -713,11 +658,6 @@ router.post("/deleteSponsor", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
-
-
 
 router.post("/addNewImages", async (req, res) => {
   try {
@@ -758,14 +698,10 @@ router.post("/addNewImages", async (req, res) => {
   }
 });
 
-
-
-
-
 router.get("/images", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
-    const conference = await Conference.findOne({conferenceCode});
+    const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
       return res.status(404).json({
@@ -774,7 +710,7 @@ router.get("/images", async (req, res) => {
       });
     }
 
-    res.status(200).json( conference.slidingImages);
+    res.status(200).json(conference.slidingImages);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -782,11 +718,7 @@ router.get("/images", async (req, res) => {
       error: error.message,
     });
   }
-}
-);
-
-
-
+});
 
 router.post("/deleteImage", async (req, res) => {
   try {
@@ -805,7 +737,9 @@ router.post("/deleteImage", async (req, res) => {
     }
 
     // Find the image index in the slidingImages array by name
-    const imageIndex = conference.slidingImages.findIndex(img => img.name === name);
+    const imageIndex = conference.slidingImages.findIndex(
+      (img) => img.name === name
+    );
 
     if (imageIndex === -1) {
       return res.status(404).json({
@@ -834,15 +768,6 @@ router.post("/deleteImage", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
-
-
-
-
-
-
 
 const EmailRouter = require("../utils/sendEmail");
 router.use("/email", EmailRouter);
