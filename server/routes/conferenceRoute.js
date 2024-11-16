@@ -70,6 +70,112 @@ router.delete('/:conferenceId', async (req, res) => {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+router.post("/createAccount", async (req, res) => {
+  try {
+    const data = req.body; // Assuming the request body contains the person data
+    passwordLength = data.password.length;
+
+    if (passwordLength < 6) {
+      return res.status(400).json({ error: "Password length should be greater than 6" });
+    }
+    // Create a new Person document using the Mongoose model
+    const newConference = new Conference(data);
+
+    // Save the new person to the database
+    const response = await newConference.save();
+
+
+    res.status(200).json({ response: response });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal Server Error in craeting account" });
+  }
+});
+
+
+
+
+router.post("/checkUserName", async (req, res) => {
+  try {
+    const { conferenceCode } = req.body;
+
+    // Find the user by conferenceCode
+    const conference = await Conference.findOne({ conferenceCode: conferenceCode });
+
+    // If user does not exist or password does not match, return error
+    if (conference) {
+      return res.status(401).json({ error: "conferenceCode is already taken", conference:conference });
+    }
+    return res.status(200).json({ message: "conferenceCode is available" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+// Login Route
+router.post("/login", async (req, res) => {
+  try {
+    // Extract conferenceCode and password from request body
+    const { conferenceCode, password } = req.body;
+
+    // const payload = {
+    //   password: response.password,
+    //   conferenceCode: response.conferenceCode,
+    // };
+
+    // // console.log(JSON.stringify(payload));
+    // const token = generateToken(payload);
+
+    // Find the user by conferenceCode
+    const conference = await Conference.findOne({ conferenceCode: conferenceCode });
+
+    // If user does not exist or password does not match, return error
+    if (!conference) {
+      return res.status(401).json({ error: "Invalid conferenceCode" });
+    }
+    if (!(await conference.comparePassword(password))) {
+      return res.status(401).json({ error: "Invalid password" });
+    }
+
+    // // generate Token
+    // const payload = {
+    //   name: conference.name,
+    //   email: conference.email,
+    //   conferenceCode: conference.conferenceCode,
+    //   linkedIn: conference.linkedIn,
+    // };
+    
+    
+    // const token = generateToken(payload);
+
+    // // resturn token as response
+    // res.json({ token : token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+
+
+
+
 const AttendeeRoute = require('../routes/attendeeRoute');
 router.use('/:conferenceId/attendees', AttendeeRoute);
 
