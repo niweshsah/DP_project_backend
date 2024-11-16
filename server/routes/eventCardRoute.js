@@ -221,7 +221,6 @@ router.get("/food", async (req, res) => {
 
     if (!conference) {
       return res.status(404).json({
-        success: false,
         message: "Conference not found",
       });
     }
