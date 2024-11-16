@@ -498,6 +498,303 @@ router.get("/mentors", async (req, res) => {
 
 
 
+router.post("/deleteMentor", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name } = req.body;
+    // console.log("imageIndex");
+
+    // Find the conference by its code
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Find the image index in the slidingImages array by name
+    const imageIndex = conference.mentors.findIndex(img => img.name === name);
+
+    if (imageIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "mentor not found",
+      });
+    }
+
+    // console.log(imageIndex);
+    // Remove the image from the array
+    conference.mentors.splice(imageIndex, 1);
+
+    // Save the updated conference document
+    await conference.save();
+
+    res.status(200).json({
+      success: true,
+      message: "mentor deleted successfully",
+    });
+  } catch (error) {
+    // res.status(500).json({
+    //   success: false,
+    //   message: "Error deleting image",
+    //   error: error.message,
+    // });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+router.post("/addNewSponsors", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name, photo, lastModfied } = req.body;
+
+    // Find the conference and push the new food item
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Add new food item to the array
+    conference.sponsors.push({
+      name,
+      photo,
+      lastModfied,
+    });
+
+    // Save the updated conference
+    await conference.save();
+
+    res.status(201).json({
+      success: true,
+      message: "sponsor Added Successfully",
+      data: conference.sponsors[conference.sponsors.length - 1],
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error adding sponsors",
+      error: error.message,
+    });
+  }
+});
+
+
+
+
+
+router.get("/sponsors", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne({conferenceCode});
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    res.status(201).json({conferenceSponsors: conference.sponsors});
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching sponsors",
+      error: error.message,
+    });
+  }
+}
+);
+
+
+
+
+
+router.post("/deleteSponsor", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name } = req.body;
+    // console.log("imageIndex");
+
+    // Find the conference by its code
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Find the image index in the slidingImages array by name
+    const imageIndex = conference.sponsors.findIndex(img => img.name === name);
+
+    if (imageIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "sponsor not found",
+      });
+    }
+
+    // console.log(imageIndex);
+    // Remove the image from the array
+    conference.sponsors.splice(imageIndex, 1);
+
+    // Save the updated conference document
+    await conference.save();
+
+    res.status(200).json({
+      success: true,
+      message: "sponsor deleted successfully",
+    });
+  } catch (error) {
+    // res.status(500).json({
+    //   success: false,
+    //   message: "Error deleting image",
+    //   error: error.message,
+    // });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+router.post("/addNewImages", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name, photo, lastModfied } = req.body;
+
+    // Find the conference and push the new food item
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Add new food item to the array
+    conference.slidingImages.push({
+      name,
+      photo,
+      lastModfied,
+    });
+
+    // Save the updated conference
+    await conference.save();
+
+    res.status(200).json({
+      success: true,
+      message: "images Added Successfully",
+      data: conference.slidingImages[conference.slidingImages.length - 1],
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error adding images",
+      error: error.message,
+    });
+  }
+});
+
+
+
+
+
+router.get("/images", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne({conferenceCode});
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    res.status(200).json({images: conference.slidingImages});
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching images",
+      error: error.message,
+    });
+  }
+}
+);
+
+
+
+
+router.post("/deleteImage", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name } = req.body;
+    console.log("imageIndex");
+
+    // Find the conference by its code
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Find the image index in the slidingImages array by name
+    const imageIndex = conference.slidingImages.findIndex(img => img.name === name);
+
+    if (imageIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "Image not found",
+      });
+    }
+
+    // console.log(imageIndex);
+    // Remove the image from the array
+    conference.slidingImages.splice(imageIndex, 1);
+
+    // Save the updated conference document
+    await conference.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Image deleted successfully",
+    });
+  } catch (error) {
+    // res.status(500).json({
+    //   success: false,
+    //   message: "Error deleting image",
+    //   error: error.message,
+    // });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
 
 
 
