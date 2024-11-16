@@ -11,6 +11,12 @@ const ConferenceSchema = new Schema({
     type: Date,
     required: true,
   },
+  conferenceCode:
+  {
+    type: String,
+    required: true,
+    unique : true,
+  },
   endDate: {
     type: Date,
     required: true,
