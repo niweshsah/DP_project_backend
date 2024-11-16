@@ -610,7 +610,7 @@ router.get("/sponsors", async (req, res) => {
       });
     }
 
-    res.status(201).json({conferenceSponsors: conference.sponsors});
+    res.status(201).json(conference.sponsors);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -732,7 +732,7 @@ router.get("/images", async (req, res) => {
       });
     }
 
-    res.status(200).json({images: conference.slidingImages});
+    res.status(200).json( conference.slidingImages);
   } catch (error) {
     res.status(500).json({
       success: false,
