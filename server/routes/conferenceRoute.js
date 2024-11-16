@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Conference = require('../models/conference');
 const Mentor = require('../models/mentor');
+// const EventCardRoute = require('../routes/eventCardRoute');
+
 
 // get all conferences
 router.get('/', async (req, res) => {
@@ -174,6 +176,35 @@ router.post("/login", async (req, res) => {
 });
 
 
+router.get("/:conferenceCode/checkConferenceCode", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne({ conferenceCode: conferenceCode });
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+    res.status(200).json({ message: "Conference found" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -191,10 +222,17 @@ router.use('/:conferenceId/mentors', MentorRoute);
 const SponsorRoute = require('../routes/sponsorRoute');
 router.use('/:conferenceId/sponsors', SponsorRoute);
 
-const EventCardRoute = require('../routes/eventCardRoute');
-router.use('/:conferenceId/eventCard', EventCardRoute);
 
 const SlidingImagesRoute = require('../routes/slidingImagesRoute');
 router.use('/:conferenceId/SlidingImages', SlidingImagesRoute);
+
+
+const EventCardRoute = require('../routes/eventCardRoute');
+router.use('/:conferenceCode/eventCard', EventCardRoute);
+
+
+// const EmailRouter = require("../utils/sendEmail");
+// router.use("/emailsending", EmailRouter);
+
 
 module.exports = router;

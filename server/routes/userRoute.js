@@ -195,6 +195,16 @@ router.post("/addNewAttendee", async (req, res) => {
   }
 });
 
+
+router.get("/",async (req, res) => {
+  try {
+    const attendees = await User.find();
+    res.status(200).json(attendees);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+} );
+
 const conferenceRoutes = require("./conferenceRoute"); // Import the conference route
 router.use("/conference", conferenceRoutes); // use the conferenceRoutes
 // Add jwt middleware to the route

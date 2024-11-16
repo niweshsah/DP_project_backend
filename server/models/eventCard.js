@@ -1,27 +1,28 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const eventCardchema = new mongoose.Schema({
+const eventCardSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    required: true,
+    required: true
   },
   time: {
-    type: String,
-    required: true,
+    type: Date,
+    required: true
   },
   venue: {
     type: String,
-    required: true,
-  },
-  lastModified: { // Optional field to store the last modification date
-    type: Date,
-    default: Date.now,
+    required: true
   }
 });
 
-EventCard = mongoose.model("EventCard", eventCardchema);
-module.exports = EventCard;
+// const dailyEventsSchema = new mongoose.Schema({
+//   date: {
+//     type: Date, // Use 'YYYY-MM-DD' format for consistency
+//     required: true
+//   },
+//   events: [eventCardSchema]
+// });
+
+module.exports = mongoose.model('EventCard', eventCardSchema);
+
+// module.exports = mongoose.model('DailyEvents', dailyEventsSchema);

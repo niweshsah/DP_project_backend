@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
-
+const dailyEventsSchema = require('./eventCard');
 
 const ConferenceSchema = new Schema({
   name: {
@@ -33,21 +33,84 @@ const ConferenceSchema = new Schema({
     required: true,
     default: "IIT Mandi",
   },
-  events: {
-    type: [Schema.Types.ObjectId],  // References to event objects
-    ref: 'Event',
-    default: [],
-  },
-  attendees: {
-    type: Map,
-    of: new Schema({
-      attended: {
-        type: Boolean,
-        default: false,
+
+events: {
+  type: Map,
+  of: [
+    {
+      title: String,
+      time: String,
+      venue: String,
+      // date: String
+    }
+  ],
+  default: {}
+},
+  // attendees: {
+  //   type: Map,
+  //   of: new Schema({
+  //     attended: {
+  //       type: Boolean,
+  //       default: false,
+  //     },
+  //   }),
+  // },
+
+  
+  attendeesFalse:[
+    {
+      username: {
+        type: String, // username
       },
-    }),
-  },
+      name:{
+        type: String,
+      },
+      email:{
+        type: String,
+      },
+    }
+  ],
+
+  attendeesTrue:[
+    {
+      username: {
+        type: String, // username
+      },
+      name:{
+        type: String,
+      },
+      email:{
+        type: String,
+      },
+    }
+  ],
+
+  food: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      description: {
+        type: String,
+        // required: true,
+      },
+      startTime: {
+        type: Date,
+        // required: true,
+      },
+      expiryTime: {
+        type: Date,
+        // required: true,
+      },
+    },
+  ]
 });
+
+
+
+
+
 
 ConferenceSchema.pre("save", async function (next) {
   try {
@@ -61,6 +124,10 @@ ConferenceSchema.pre("save", async function (next) {
   }
 });
 
+
+
+
+
 ConferenceSchema.methods.comparePassword = async function (candidatePassword) {
   // return await bcrypt.compare(candidatePassword, this.password);
   try {
@@ -71,5 +138,8 @@ ConferenceSchema.methods.comparePassword = async function (candidatePassword) {
     throw err;
   }
 };
+
+
+
 
 module.exports = mongoose.model('Conference', ConferenceSchema);

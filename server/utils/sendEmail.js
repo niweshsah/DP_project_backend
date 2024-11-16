@@ -5,11 +5,14 @@
 
 const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
-const Attendee = require("../models/attendee"); // Adjust the path as necessary
+// const User = require("../models/user"); // Adjust the path as necessary
 require("dotenv").config(); // To use environment variables from the .env file
+const express = require("express");
+// const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-
-
+const User = require("../models/user"); // Adjust the path as necessary
+const Conference = require("../models/conference"); // Adjust the path as necessary
 
 // Set up nodemailer transporter using Gmail
 const transporter = nodemailer.createTransport({
@@ -23,85 +26,84 @@ const transporter = nodemailer.createTransport({
 
 
 
-// Function to send QR code to an attendee
-// async function sendQRCodeEmail(attendee) {
-//   try {
-//     // Generate QR code for attendee’s secret QR string
-//     const qrCodeData = await QRCode.toDataURL(attendee.secretQRSTring);
-
-//     // Email configuration
-//     const mailOptions = {
-//       from: "sahniwesh@gmail.com", // Sender address
-//       to: attendee.email, // Receiver's email
-//       subject: "Your QR Code for the Event",
-//       html: `
-//         <p>Hi ${attendee.name},</p>
-//         <p>Thank you for registering for the event. Please find your unique QR code attached below.</p>
-//         <img src="${qrCodeData}" alt="QR Code">
-//         <p>Show this code at the entrance to verify your attendance.</p>
-//         <p>Best regards,<br/>Event Team</p>
-//       `,
-//     };
-
-//     // Send the email
-//     await transporter.sendMail(mailOptions);
-//     console.log(`QR code email sent to ${attendee.email}`);
-//   } catch (error) {
-//     console.error(`Error sending email to ${attendee.email}:`, error);
-//   }
-// }
 
 
-
-async function sendQRCodeEmail(attendee) {
+// Function to generate and send a QR code email
+async function sendQRCodeEmail(user) {
   try {
-    // Generate QR code as a buffer
-    const qrCodeBuffer = await QRCode.toBuffer(attendee.secretQRSTring);
+    // Generate QR code as a buffer (assuming `user.secretQRSTring` contains the unique secret for the QR code)
+    // const qrCodeBuffer = await QRCode.toBuffer(user.username || user.email);
+    const conferenceCode = req.params.conferenceCode;
+
 
     // Email configuration
     const mailOptions = {
       from: "sahniwesh@gmail.com", // Sender address
-      to: attendee.email, // Receiver's email
+      to: user.email, // Receiver's email
       subject: "Your QR Code for the Conference",
       html: `
-        <p>Hi ${attendee.name},</p>
-        <p>We humbly invite you to our conference. Please find your unique QR code attached below.</p>
-        <p>Show this code at the entrance to verify your attendance.</p>
+        <p>Hi ${user.name},</p>
+        <p>We humbly invite you to our conference. Your eventCode is ${conferenceCode}.</p>
         <p>Best regards,<br/>GatherHub Team</p>
       `,
-      attachments: [
-        {
-          filename: 'QRCode.png',
-          content: qrCodeBuffer,
-          contentType: 'image/png',
-        },
-      ],
+      // attachments: [
+      //   {
+      //     filename: "QRCode.png",
+      //     content: qrCodeBuffer,
+      //     contentType: "image/png",
+      //   },
+      // ],
     };
 
     // Send the email
     await transporter.sendMail(mailOptions);
-    console.log(`QR code email sent to ${attendee.email}`);
+    console.log(`QR code email sent to ${user.email}`);
   } catch (error) {
-    console.error(`Error sending email to ${attendee.email}:`, error);
+    console.error(`Error sending email to ${user.email}:`, error);
   }
 }
 
-
-// Function to send QR codes to all attendees
-async function sendQRCodesToAllAttendees(attendees_id) {
+// Function to send QR codes to all attendees in `attendeesFalse`
+async function sendQRCodesToAllUsers(conference) {
   try {
-    const attendees = await Attendee.find({ _id: { $in: attendees_id } });
+    // Fetch the conference document by ID
+    // const conferenceCode = req.params.conferenceCode;
 
-    // const attendees = await Attendee.find({}); // Fetch all attendees from the database
-    for (const attendee of attendees) {
-      await sendQRCodeEmail(attendee); // Send an email to each attendee
+    // const conference = await Conference.findOne({ conferenceCode });
+
+    const attendeesFalseList = conference.attendeesFalse;
+
+    // Loop through each user in attendeesFalse and send an email
+    for (const user of attendeesFalseList) {
+      await sendQRCodeEmail(user);
     }
   } catch (error) {
     console.error("Error fetching attendees or sending emails:", error);
   }
 }
 
+// Send email to all attendees of the conference
+router.get("/sendEmails", async (req, res) => {
+  try {
+    const conferenceCode = req.params.conferenceCode;
+    // console.log(conferenceId);
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    sendQRCodesToAllUsers(conference);
+    res.status(200).json({ message: "Emails sent to all attendees" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: error.message, message: "Error sending emails" });
+  } 
+}
+);
 
 
 // Export the functions to be used elsewhere
-module.exports = { sendQRCodeEmail, sendQRCodesToAllAttendees };
+module.exports = { sendQRCodeEmail, sendQRCodesToAllUsers };
+module.exports = router;
