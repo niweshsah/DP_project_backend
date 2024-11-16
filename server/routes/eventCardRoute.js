@@ -44,10 +44,6 @@ router.post("/addNewEvent", async (req, res) => {
   }
 });
 
-
-
-
-
 // Route to delete events from a conference on a specific date
 router.delete("/:date", async (req, res) => {
   const { conferenceCode, date } = req.params; // Access conferenceCode and date from URL params
@@ -92,153 +88,137 @@ router.delete("/:date", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Add food item to a conference
-router.post('/food', async (req, res) => {
-    try {
-        const { conferenceCode } = req.params;
-        const { name, description, startTime, expiryTime } = req.body;
-  
-        // Validation
-        if (!name) {
-            return res.status(400).json({
-                success: false,
-                message: 'Food name is required'
-            });
-        }
-  
-        // If startTime and expiryTime are provided, validate them
-        if (startTime && expiryTime) {
-            if (new Date(expiryTime) <= new Date(startTime)) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Expiry time must be after start time'
-                });
-            }
-        }
-  
-        // Find the conference and push the new food item
-        const conference = await Conference.findOne({ conferenceCode });
-  
-        if (!conference) {
-            return res.status(404).json({
-                success: false,
-                message: 'Conference not found'
-            });
-        }
-  
-        // Add new food item to the array
-        conference.food.push({
-            name,
-            description,
-            startTime: startTime ? new Date(startTime) : undefined,
-            expiryTime: expiryTime ? new Date(expiryTime) : undefined
-        });
-  
-        // Save the updated conference
-        await conference.save();
-  
-        res.status(201).json({
-            success: true,
-            message: 'Food item added successfully',
-            data: conference.food[conference.food.length - 1]
-        });
-  
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error adding food item',
-            error: error.message
-        });
+router.post("/food", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name, description, startTime, expiryTime } = req.body;
+
+    // Validation
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Food name is required",
+      });
     }
-  });
-  
-  // Delete food item from a conference
-  router.delete('/food/:foodName', async (req, res) => {
-    try {
-        const { conferenceCode, foodName } = req.params;
-  
-        // Find the conference
-        const conference = await Conference.findOne({ conferenceCode });
-  
-        if (!conference) {
-            return res.status(404).json({
-                success: false,
-                message: 'Conference not found'
-            });
-        }
-  
-        // Find the food item index
-        const foodIndex = conference.food.findIndex(item => item.name === foodName);
-  
-        if (foodIndex === -1) {
-            return res.status(404).json({
-                success: false,
-                message: 'Food item not found'
-            });
-        }
-  
-        // Remove the food item
-        conference.food.splice(foodIndex, 1);
-        await conference.save();
-  
-        res.status(200).json({
-            success: true,
-            message: 'Food item deleted successfully'
+
+    // If startTime and expiryTime are provided, validate them
+    if (startTime && expiryTime) {
+      if (new Date(expiryTime) <= new Date(startTime)) {
+        return res.status(400).json({
+          success: false,
+          message: "Expiry time must be after start time",
         });
-  
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error deleting food item',
-            error: error.message
-        });
+      }
     }
-  });
-  
-  // Get all food items for a conference
-  router.get('/food', async (req, res) => {
-    try {
-        const { conferenceCode } = req.params;
-        const conference = await Conference.findOne({ conferenceCode });
-  
-        if (!conference) {
-            return res.status(404).json({
-                success: false,
-                message: 'Conference not found'
-            });
-        }
-  
-        res.status(200).json({
-            success: true,
-            data: conference.food
-        });
-  
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching food items',
-            error: error.message
-        });
+
+    // Find the conference and push the new food item
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
     }
-  });
-  
-  
-  
+
+    // Add new food item to the array
+    conference.food.push({
+      name,
+      description,
+      startTime: startTime ? new Date(startTime) : undefined,
+      expiryTime: expiryTime ? new Date(expiryTime) : undefined,
+    });
+
+    // Save the updated conference
+    await conference.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Food item added successfully",
+      data: conference.food[conference.food.length - 1],
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error adding food item",
+      error: error.message,
+    });
+  }
+});
+
+// Delete food item from a conference
+router.delete("/food/:foodName", async (req, res) => {
+  try {
+    const { conferenceCode, foodName } = req.params;
+
+    // Find the conference
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Find the food item index
+    const foodIndex = conference.food.findIndex(
+      (item) => item.name === foodName
+    );
+
+    if (foodIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "Food item not found",
+      });
+    }
+
+    // Remove the food item
+    conference.food.splice(foodIndex, 1);
+    await conference.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Food item deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error deleting food item",
+      error: error.message,
+    });
+  }
+});
+
+// Get all food items for a conference
+router.get("/food", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: conference.food,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching food items",
+      error: error.message,
+    });
+  }
+});
+
 // GET route to fetch attendeesFalse
-router.get('/attendees-false', async (req, res) => {
+router.get("/attendees-false", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
 
@@ -246,7 +226,7 @@ router.get('/attendees-false', async (req, res) => {
     const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
-      return res.status(404).json({ error: 'Conference not found' });
+      return res.status(404).json({ error: "Conference not found" });
     }
 
     const attendeesFalse = conference.attendeesFalse || [];
@@ -255,11 +235,13 @@ router.get('/attendees-false', async (req, res) => {
     // Return the attendeesFalse list and count
     return res.status(200).json({ count: count, attendees: attendeesFalse });
   } catch (error) {
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
-router.get('/attendees-true', async (req, res) => {
+router.get("/attendees-true", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
 
@@ -267,7 +249,7 @@ router.get('/attendees-true', async (req, res) => {
     const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
-      return res.status(404).json({ error: 'Conference not found' });
+      return res.status(404).json({ error: "Conference not found" });
     }
 
     const attendeesTrue = conference.attendeesTrue || [];
@@ -276,130 +258,120 @@ router.get('/attendees-true', async (req, res) => {
     // Return the attendeesFalse list and count
     return res.status(200).json({ count: count, attendees: attendeesTrue });
   } catch (error) {
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
-  router.post('/registerAttendees', async (req, res) => {
-    try {
-      const { conferenceCode } = req.params;
-      const { attendees } = req.body; // Expect an array of attendees
-  
-      // Validate request body
-      if (!Array.isArray(attendees) || attendees.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'Please provide an array of attendees'
-        });
-      }
-  
-      // Find the conference
-      const conference = await Conference.findOne({ conferenceCode });
-      if (!conference) {
-        return res.status(404).json({
-          success: false,
-          message: 'Conference not found'
-        });
-      }
-  
-      // Validate each attendee and collect validation errors
-      const validationErrors = [];
-      const validAttendees = [];
-  
-      for (let i = 0; i < attendees.length; i++) {
-        const attendee = attendees[i];
-        
-        // Check if all required fields are present
-        if (!attendee.username || !attendee.name || !attendee.email) {
-          validationErrors.push({
-            index: i,
-            attendee,
-            error: 'Missing required fields'
-          });
-          continue;
-        }
-  
-        // Check if already registered in attendeesFalse
-        const isInFalse = conference.attendeesFalse.some(
-          existing => existing.username === attendee.username || 
-                     existing.email === attendee.email
-        );
-  
-        // Check if already registered in attendeesTrue
-        const isInTrue = conference.attendeesTrue.some(
-          existing => existing.username === attendee.username || 
-                     existing.email === attendee.email
-        );
-  
-        if (isInFalse || isInTrue) {
-          validationErrors.push({
-            index: i,
-            attendee,
-            error: 'Already registered'
-          });
-          continue;
-        }
-  
-        // If all validations pass, add to valid attendees
-        validAttendees.push({
-          username: attendee.username,
-          name: attendee.name,
-          email: attendee.email
-        });
-      }
-  
-      // Add valid attendees to conference
-      if (validAttendees.length > 0) {
-        conference.attendeesFalse.push(...validAttendees);
-        await conference.save();
-      }
-  
-      // Prepare response
-      const response = {
-        success: true,
-        message: 'Bulk registration processed',
-        summary: {
-          total: attendees.length,
-          successful: validAttendees.length,
-          failed: validationErrors.length
-        },
-        validAttendees,
-        errors: validationErrors
-      };
-  
-      // If all failed, return 400 status
-      if (validAttendees.length === 0) {
-        return res.status(400).json({
-          ...response,
-          success: false,
-          message: 'No valid attendees to register'
-        });
-      }
-  
-      return res.status(200).json(response);
-  
-    } catch (error) {
-      console.error('Error in bulk registration:', error);
-      return res.status(500).json({
+router.post("/registerAttendees", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { attendees } = req.body; // Expect an array of attendees
+
+    // Validate request body
+    if (!Array.isArray(attendees) || attendees.length === 0) {
+      return res.status(400).json({
         success: false,
-        message: 'Internal server error',
-        error: error.message
+        message: "Please provide an array of attendees",
       });
     }
-  });
 
+    // Find the conference
+    const conference = await Conference.findOne({ conferenceCode });
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
 
+    // Validate each attendee and collect validation errors
+    const validationErrors = [];
+    const validAttendees = [];
 
+    for (let i = 0; i < attendees.length; i++) {
+      const attendee = attendees[i];
 
+      // Check if all required fields are present
+      if (!attendee.username || !attendee.name || !attendee.email) {
+        validationErrors.push({
+          index: i,
+          attendee,
+          error: "Missing required fields",
+        });
+        continue;
+      }
 
+      // Check if already registered in attendeesFalse
+      const isInFalse = conference.attendeesFalse.some(
+        (existing) =>
+          existing.username === attendee.username ||
+          existing.email === attendee.email
+      );
 
+      // Check if already registered in attendeesTrue
+      const isInTrue = conference.attendeesTrue.some(
+        (existing) =>
+          existing.username === attendee.username ||
+          existing.email === attendee.email
+      );
 
+      if (isInFalse || isInTrue) {
+        validationErrors.push({
+          index: i,
+          attendee,
+          error: "Already registered",
+        });
+        continue;
+      }
 
+      // If all validations pass, add to valid attendees
+      validAttendees.push({
+        username: attendee.username,
+        name: attendee.name,
+        email: attendee.email,
+      });
+    }
 
+    // Add valid attendees to conference
+    if (validAttendees.length > 0) {
+      conference.attendeesFalse.push(...validAttendees);
+      await conference.save();
+    }
 
+    // Prepare response
+    const response = {
+      success: true,
+      message: "Bulk registration processed",
+      summary: {
+        total: attendees.length,
+        successful: validAttendees.length,
+        failed: validationErrors.length,
+      },
+      validAttendees,
+      errors: validationErrors,
+    };
 
+    // If all failed, return 400 status
+    if (validAttendees.length === 0) {
+      return res.status(400).json({
+        ...response,
+        success: false,
+        message: "No valid attendees to register",
+      });
+    }
 
-
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Error in bulk registration:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+});
 
 // Route to move a user from `attendeesFalse` to `attendeesTrue`
 router.put("/move-attendee", async (req, res) => {
@@ -424,7 +396,9 @@ router.put("/move-attendee", async (req, res) => {
     );
 
     if (attendeeIndex === -1) {
-      return res.status(404).json({ error: "User not found in attendeesFalse" });
+      return res
+        .status(404)
+        .json({ error: "User not found in attendeesFalse" });
     }
 
     // Remove attendee from `attendeesFalse` and push to `attendeesTrue`
@@ -440,7 +414,9 @@ router.put("/move-attendee", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "An error occurred while processing the request" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing the request" });
   }
 });
 
@@ -451,12 +427,84 @@ router.put("/move-attendee", async (req, res) => {
 
 
 
+
+
+router.post("/addNewMentor", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name, photo, profession, lastModfied } = req.body;
+
+    // Find the conference and push the new food item
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Add new food item to the array
+    conference.mentors.push({
+      name,
+      photo,
+      profession,
+      lastModfied,
+    });
+
+    // Save the updated conference
+    await conference.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Mentor Added Successfully",
+      data: conference.mentors[conference.mentors.length - 1],
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error adding mentor",
+      error: error.message,
+    });
+  }
+});
+
+
+
+
+
+router.get("/mentors", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne({conferenceCode});
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    res.status(200).json({conferenceMentors: conference.mentors});
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching mentors",
+      error: error.message,
+    });
+  }
+}
+);
+
+
+
+
+
+
+
+
+
 const EmailRouter = require("../utils/sendEmail");
 router.use("/email", EmailRouter);
-
-
-
-
-
 
 module.exports = router;
