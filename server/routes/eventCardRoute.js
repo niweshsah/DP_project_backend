@@ -709,7 +709,7 @@ router.get("/images", async (req, res) => {
       });
     }
 
-    res.status(200).json(conference.slidingImages);
+    res.status(200).json({ eventimages : conference.slidingImages });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -768,21 +768,6 @@ router.post("/deleteImage", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 router.post("/addAbout", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
@@ -816,10 +801,6 @@ router.post("/addAbout", async (req, res) => {
   }
 });
 
-
-
-
-
 router.get("/about", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
@@ -840,181 +821,115 @@ router.get("/about", async (req, res) => {
       error: error.message,
     });
   }
-}
-);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 // Get all helplines for a specific conference
-router.get('/helplines', async (req, res) => {
+router.get("/helplines", async (req, res) => {
   try {
-      const conference = await Conference.findOne({ 
-          conferenceCode: req.params.conferenceCode 
+    const conference = await Conference.findOne({
+      conferenceCode: req.params.conferenceCode,
+    });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
       });
+    }
 
-      if (!conference) {
-          return res.status(404).json({ 
-              success: false, 
-              message: 'Conference not found' 
-          });
-      }
-
-      res.status(200).json(
-    conference.helpline
-      );
+    res.status(200).json(conference.helpline);
   } catch (error) {
-      res.status(500).json({
-          success: false,
-          message: 'Error fetching helplines',
-          error: error.message
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error fetching helplines",
+      error: error.message,
+    });
   }
 });
 
 // Add a new helpline to a conference
-router.post('/addNewHelpline', async (req, res) => {
+router.post("/addNewHelpline", async (req, res) => {
   try {
-      const { name, phone } = req.body;
+    const { name, phone } = req.body;
 
-      // Validate required fields
-      if (!name || !phone) {
-          return res.status(400).json({
-              success: false,
-              message: 'Both name and phone are required'
-          });
-      }
-
-      const conference = await Conference.findOne({ 
-          conferenceCode: req.params.conferenceCode 
+    // Validate required fields
+    if (!name || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Both name and phone are required",
       });
+    }
 
-      if (!conference) {
-          return res.status(404).json({
-              success: false,
-              message: 'Conference not found'
-          });
-      }
+    const conference = await Conference.findOne({
+      conferenceCode: req.params.conferenceCode,
+    });
 
-      // Add new helpline
-      conference.helpline.push({ name, phone });
-      await conference.save();
-
-      res.status(201).json({
-          success: true,
-          message: 'Helpline added successfully',
-          helpline: conference.helpline[conference.helpline.length - 1]
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
       });
+    }
+
+    // Add new helpline
+    conference.helpline.push({ name, phone });
+    await conference.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Helpline added successfully",
+      helpline: conference.helpline[conference.helpline.length - 1],
+    });
   } catch (error) {
-      res.status(500).json({
-          success: false,
-          message: 'Error adding helpline',
-          error: error.message
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error adding helpline",
+      error: error.message,
+    });
   }
 });
 
 // Delete a helpline from a conference
-router.delete('/helpline/:name', async (req, res) => {
+router.delete("/helpline/:name", async (req, res) => {
   try {
-      const conference = await Conference.findOne({ 
-          conferenceCode: req.params.conferenceCode 
+    const conference = await Conference.findOne({
+      conferenceCode: req.params.conferenceCode,
+    });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
       });
+    }
 
-      if (!conference) {
-          return res.status(404).json({
-              success: false,
-              message: 'Conference not found'
-          });
-      }
+    // Find and remove the helpline by name
+    const helplineIndex = conference.helpline.findIndex(
+      (h) => h.name === req.params.name
+    );
 
-   // Find and remove the helpline by name
-   const helplineIndex = conference.helpline.findIndex(
-    h => h.name === req.params.name
-);
-
-
-      if (helplineIndex === -1) {
-          return res.status(404).json({
-              success: false,
-              message: 'Helpline not found'
-          });
-      }
-
-      conference.helpline.splice(helplineIndex, 1);
-      await conference.save();
-
-      res.status(200).json({
-          success: true,
-          message: 'Helpline deleted successfully'
+    if (helplineIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "Helpline not found",
       });
+    }
+
+    conference.helpline.splice(helplineIndex, 1);
+    await conference.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Helpline deleted successfully",
+    });
   } catch (error) {
-      res.status(500).json({
-          success: false,
-          message: 'Error deleting helpline',
-          error: error.message
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error deleting helpline",
+      error: error.message,
+    });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const EmailRouter = require("../utils/sendEmail");
 router.use("/email", EmailRouter);
