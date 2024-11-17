@@ -83,7 +83,7 @@ router.delete('/:conferenceId', async (req, res) => {
 
 
 
-router.post("/createAccount", async (req, res) => {
+router.post("/createNewConference", async (req, res) => {
   try {
     const data = req.body; // Assuming the request body contains the person data
     passwordLength = data.password.length;
@@ -108,7 +108,7 @@ router.post("/createAccount", async (req, res) => {
 
 
 
-router.post("/checkUserName", async (req, res) => {
+router.post("/checkConferenceCode", async (req, res) => {
   try {
     const { conferenceCode } = req.body;
 
@@ -168,7 +168,7 @@ router.post("/login", async (req, res) => {
 
     // // resturn token as response
     // res.json({ token : token });
-    return res.status(200).json({ message: "Login Successful" });
+    return res.status(200).json(conferenceCode);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
