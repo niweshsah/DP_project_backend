@@ -709,7 +709,8 @@ router.get("/images", async (req, res) => {
       });
     }
 
-    res.status(200).json({ eventimages : conference.slidingImages });
+    res.status(200).json(conference.slidingImages);
+    // res.status(200).json({ eventimages : conference.slidingImages['photo'] });
   } catch (error) {
     res.status(500).json({
       success: false,
