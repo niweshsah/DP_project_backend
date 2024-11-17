@@ -157,13 +157,26 @@ events: {
     }
   ],
   about: {
-    type: String,
+    title: {
+      type: String,
+      // required: true,
+    },
+    description: {
+      type: String,
+      // required: true,
+    },
     // required: true,
   },
-  helpline: {
+  helpline:[ {
+    name: {
+      type: String,
+      // required: true,
+    },
+    number: {
     type: Number,
+    }
     // required: true,
-  },
+  }],
 });
 
 
