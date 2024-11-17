@@ -197,7 +197,28 @@ router.get("/:conferenceCode/checkConferenceCode", async (req, res) => {
 
 
 
+router.post("/checkConferenceCodeAndPassword", async (req, res) => {
+  try {
+    const { conferenceCode, password } = req.body;
 
+    // Find the user by conferenceCode
+    const conference = await Conference.findOne({ conferenceCode: conferenceCode });
+
+    // If user does not exist or password does not match, return error
+    if (!conference) {
+      return res.status(401).json({ error: "Invalid conferenceCode" });
+    }
+    if (!(await conference.comparePassword(password))) {
+      return res.status(401).json({ error: "Invalid password" });
+    }
+
+    return res.status(200).json(conferenceCode);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+);
 
 
 
