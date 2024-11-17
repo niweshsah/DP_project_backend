@@ -205,6 +205,90 @@ router.get("/",async (req, res) => {
   }
 } );
 
+
+
+
+
+
+
+
+
+router.get("/shareCard/:username1/:username2", async (req, res) => {
+  try {
+    const username1 = req.params.username1;
+    const username2 = req.params.username2;
+
+    if (username1 === username2) {
+      return res.status(400).json({ error: "You can't share card with yourself" });
+    }
+
+    if (username1 === "" || username2 === "") {
+      return res.status(400).json({ error: "Please enter both usernames" });
+    }
+
+    const user1 = await User.findOne({ username: username1 });
+    const user2 = await User.findOne({ username: username2 });
+
+    if (!user1) {
+      return res.status(400).json({ error: "User1 not found" });
+    }
+
+    if (!user2) {
+      return res.status(400).json({ error: "User2 not found" });
+    }
+
+    // Check if they are already friends
+    const isAlreadyFriend1 = user1.friends.some(friend => friend.username === user2.username);
+    const isAlreadyFriend2 = user2.friends.some(friend => friend.username === user1.username);
+
+    if (isAlreadyFriend1 && isAlreadyFriend2) {
+      return res.status(400).json({ error: "They are already friends" });
+    }
+
+    // Add each other as friends if not already added
+    if (!isAlreadyFriend1) {
+      user1.friends.push({ username: user2.username, name: user2.name, email: user2.email });
+    }
+
+    if (!isAlreadyFriend2) {
+      user2.friends.push({ username: user1.username, name: user1.name, email: user1.email });
+    }
+
+    await user1.save();
+    await user2.save();
+
+    res.status(200).json({ message: "Card shared successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+router.get("/getFriends/:username", async (req, res) => {
+  try {
+    // const { username } = req.body;
+    const username = req.params.username;
+
+    const user
+    = await User.findOne({ username: username });
+
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
+
+    const friends = user.friends;
+
+    res.status(200).json(friends );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+);
+
+
+
 const conferenceRoutes = require("./conferenceRoute"); // Import the conference route
 router.use("/conference", conferenceRoutes); // use the conferenceRoutes
 // Add jwt middleware to the route

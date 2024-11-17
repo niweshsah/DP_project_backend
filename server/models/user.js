@@ -15,6 +15,14 @@ const userSchema = new mongoose.Schema({
     trim: true,
     // deafult:
   },
+  mobile: {
+    type: String,
+    required: false,
+    // unique: true,
+    // lowercase: true,
+    // trim: true,
+    // deafult:
+  },
   username: {
     type: String,
     required: true,
@@ -34,6 +42,21 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+
+  friends:
+  [
+    {
+      username: {
+        type: String,
+      },
+      name: {
+        type: String,
+      },
+      email: {
+        type: String,
+      },
+    }
+  ]
 });
 
 
