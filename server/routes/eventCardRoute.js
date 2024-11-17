@@ -907,13 +907,13 @@ router.get('/helplines', async (req, res) => {
 // Add a new helpline to a conference
 router.post('/addNewHelpline', async (req, res) => {
   try {
-      const { name, number } = req.body;
+      const { name, phone } = req.body;
 
       // Validate required fields
-      if (!name || !number) {
+      if (!name || !phone) {
           return res.status(400).json({
               success: false,
-              message: 'Both name and number are required'
+              message: 'Both name and phone are required'
           });
       }
 
@@ -929,7 +929,7 @@ router.post('/addNewHelpline', async (req, res) => {
       }
 
       // Add new helpline
-      conference.helpline.push({ name, number });
+      conference.helpline.push({ name, phone });
       await conference.save();
 
       res.status(201).json({

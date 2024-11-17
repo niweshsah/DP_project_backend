@@ -173,7 +173,7 @@ events: {
       type: String,
       // required: true,
     },
-    number: {
+    phone: {
     type: Number,
     }
     // required: true,
