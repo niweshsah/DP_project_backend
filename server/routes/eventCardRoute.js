@@ -768,6 +768,74 @@ router.post("/deleteImage", async (req, res) => {
   }
 });
 
+router.post("/addAbout", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { title, description } = req.body;
+
+    // Find the conference and push the new food item
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        message: "Conference not found",
+      });
+    }
+
+    // Add new food item to the array
+    conference.about = {
+      title,
+      description,
+    };
+
+    // Save the updated conference
+    await conference.save();
+
+    res.status(200).json(conference.about);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error adding about",
+      error: error.message,
+    });
+  }
+});
+
+
+
+
+
+router.get("/about", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne({
+      conferenceCode,
+    });
+
+    if (!conference) {
+      return res.status(404).json({
+        message: "Conference not found",
+      });
+    }
+
+    res.status(200).json(conference.about);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching about",
+      error: error.message,
+    });
+  }
+}
+);
+
+
+
+
+
+
+
+
+
 const EmailRouter = require("../utils/sendEmail");
 router.use("/email", EmailRouter);
 

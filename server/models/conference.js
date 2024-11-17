@@ -156,6 +156,7 @@ events: {
       },
     }
   ],
+  
   about: {
     title: {
       type: String,
