@@ -155,7 +155,7 @@ router.post("/food", async (req, res) => {
     // Save the updated conference
     await conference.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Food item added successfully",
       data: conference.food[conference.food.length - 1],
@@ -464,7 +464,7 @@ router.post("/addNewMentor", async (req, res) => {
     // Save the updated conference
     await conference.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Mentor Added Successfully",
       data: conference.mentors[conference.mentors.length - 1],
@@ -599,7 +599,7 @@ router.get("/sponsors", async (req, res) => {
       });
     }
 
-    res.status(201).json(conference.sponsors);
+    res.status(200).json(conference.sponsors);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -876,7 +876,7 @@ router.post("/addNewHelpline", async (req, res) => {
     conference.helpline.push({ name, phone });
     await conference.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Helpline added successfully",
       helpline: conference.helpline[conference.helpline.length - 1],
