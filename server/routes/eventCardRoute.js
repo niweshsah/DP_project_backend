@@ -390,8 +390,8 @@ router.post("/registerAttendees", async (req, res) => {
     });
   }
 });
-
-// Route to move a user from `attendeesFalse` to `attendeesTrue`
+         
+// Route t  fo move a user from `attendeesFalse` to `attendeesTrue`
 router.put("/move-attendee", async (req, res) => {
   const { conferenceCode } = req.params;
   const { username } = req.body;
