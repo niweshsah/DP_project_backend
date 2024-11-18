@@ -573,7 +573,7 @@ router.post("/addNewSponsors", async (req, res) => {
     // Save the updated conference
     await conference.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "sponsor Added Successfully",
       data: conference.sponsors[conference.sponsors.length - 1],
