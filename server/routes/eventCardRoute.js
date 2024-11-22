@@ -18,7 +18,8 @@ router.get("/test", async (req, res) => {
 router.post("/addNewEvent", async (req, res) => {
   try {
     //   const
-    const { date, title, time, venue } = req.body;
+    const { date, title, time, venue, eventCode, attendeesTrueForEvent } =
+      req.body;
     const conferenceCode = req.params.conferenceCode;
     const conference = await Conference.findOne({ conferenceCode });
     if (!conference) {
@@ -26,9 +27,13 @@ router.post("/addNewEvent", async (req, res) => {
     }
 
     if (conference.events.has(date)) {
-      conference.events.get(date).push({ title, time, venue });
+      conference.events
+        .get(date)
+        .push({ title, time, venue, eventCode, attendeesTrueForEvent });
     } else {
-      conference.events.set(date, [{ title, time, venue }]);
+      conference.events.set(date, [
+        { title, time, venue, eventCode, attendeesTrueForEvent },
+      ]);
     }
     //   attendee.foodCouponUsed.set(conferenceId, {}); // give food coupon on registration and set the value of the key to an empty object as default values are already set in the model
 
@@ -235,6 +240,8 @@ router.get("/food", async (req, res) => {
   }
 });
 
+// ---------------------------------------------------------------------------------------------------------------
+
 // GET route to fetch attendeesFalse
 router.get("/attendees-false", async (req, res) => {
   try {
@@ -259,6 +266,31 @@ router.get("/attendees-false", async (req, res) => {
   }
 });
 
+router.get("/total-attendees", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+
+    // Find the conference by its conferenceCode
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    const TotalAttendee = conference.totalAttendee || [];
+    const count = TotalAttendee.length;
+
+    // Return the attendeesFalse list and count
+    return res.status(200).json({ count: count, attendees: TotalAttendee });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+
+
 router.get("/attendees-true", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
@@ -279,6 +311,109 @@ router.get("/attendees-true", async (req, res) => {
     return res
       .status(500)
       .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+
+router.post("/deleteAttendee", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { username } = req.body;
+
+    // Find the conference by its code
+    const conference = await Conference.findOne({ conferenceCode });
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    // Find the attendee in `attendeesFalse`
+    const attendeeFalseIndex = conference.attendeesFalse.findIndex(
+      (user) => user.username === username
+    );
+
+    const attendeesTrueIndex = conference.attendeesTrue.findIndex(
+      (user) => user.username === username
+    );
+
+    const totalAttendeeIndex = conference.totalAttendee.findIndex(
+      (user) => user.username === username
+    );
+
+
+    if (
+      attendeeFalseIndex === -1 &&
+      attendeesTrueIndex === -1 &&
+      totalAttendeeIndex === -1
+    ) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (attendeeFalseIndex !== -1) {
+      conference.attendeesFalse.splice(attendeeFalseIndex, 1);
+    }
+    if (attendeesTrueIndex !== -1) {
+      conference.attendeesTrue.splice(attendeesTrueIndex, 1);
+    }
+    if (totalAttendeeIndex !== -1) {
+      conference.totalAttendee.splice(totalAttendeeIndex, 1);
+    }
+
+    // Save the updated conference document
+    await conference.save();
+
+    res.status(200).json({ message: "Attendee deleted successfully" });
+  } catch (error) {
+    // console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing the request" });
+  }
+});
+
+
+router.post("/addNewAttendee", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { username, name, email } = req.body;
+
+    // Find the conference and push the new food item
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Add new food item to the array
+    conference.attendeesFalse.push({
+      username,
+      name,
+      email,
+    });
+
+    // conference.totalAttendee.push({
+    //   username,
+    //   name,
+    //   email,
+    // });
+
+    // Save the updated conference
+    await conference.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Attendee Added Successfully",
+      data: conference.attendeesFalse[conference.attendeesFalse.length - 1],
+    });
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error adding attendee",
+      error: error.message,
+    });
   }
 });
 
@@ -355,6 +490,7 @@ router.post("/registerAttendees", async (req, res) => {
     // Add valid attendees to conference
     if (validAttendees.length > 0) {
       conference.attendeesFalse.push(...validAttendees);
+      // conference.totalAttendee.push(...validAttendees);
       await conference.save();
     }
 
@@ -390,7 +526,7 @@ router.post("/registerAttendees", async (req, res) => {
     });
   }
 });
-         
+
 // Route t  fo move a user from `attendeesFalse` to `attendeesTrue`
 router.put("/move-attendee", async (req, res) => {
   const { conferenceCode } = req.params;
@@ -437,6 +573,8 @@ router.put("/move-attendee", async (req, res) => {
       .json({ error: "An error occurred while processing the request" });
   }
 });
+
+// -------------------------------------------------------------------------------
 
 router.post("/addNewMentor", async (req, res) => {
   try {
