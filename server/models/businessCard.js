@@ -30,6 +30,9 @@ const BusinessCardSchema = new mongoose.Schema({
     location: {
         type: String,
     },
+    photo: {
+        type: String,
+    },
     });
 
 const BusinessCard = mongoose.model("BusinessCard", BusinessCardSchema);
