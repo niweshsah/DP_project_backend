@@ -548,7 +548,7 @@ router.post("/acceptedInvitation", async (req, res) => {
     const { name, designation, organization, mobile, email, about, linkedIn, location } = req.body;
 
     const conference = await Conference.findOne({ conferenceCode });
-
+    console.log(conferenceCode);
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
     }
@@ -556,7 +556,7 @@ router.post("/acceptedInvitation", async (req, res) => {
     // Check if email already exists in the business card array
     const existingEmail = conference.business_card.find(card => card.email === email);
 
-    
+
     if (existingEmail) {
       return res.status(400).json({ error: "Email already exists" });
     }
