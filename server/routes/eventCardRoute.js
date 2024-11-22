@@ -463,9 +463,17 @@ router.post("/acceptedInvitation", async (req, res) => {
 
     conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
 
-    console.log(conference.business_card);
-    
+    // console.log(conference.business_card);
+
+    conference.attendeesFalse.push({
+      username,
+      name,
+      email,
+    });
+
     await conference.save();
+
+
 
     res.status(200).json({ message: "Business card added successfully" });
   } catch (error) {
