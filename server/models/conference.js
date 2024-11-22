@@ -65,6 +65,8 @@ const ConferenceSchema = new Schema({
     default: {},
   },
 
+
+
   totalAttendee: [
     {
       username: {
@@ -78,6 +80,8 @@ const ConferenceSchema = new Schema({
       },
     },
   ],
+
+
 
   attendeesFalse: [
     {
@@ -203,7 +207,8 @@ const ConferenceSchema = new Schema({
       // required: true,
     },
   ],
-  BusinessCard: {
+
+  business_card: {
     name: {
         type: String,
         required: true,
