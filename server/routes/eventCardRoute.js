@@ -418,6 +418,8 @@ router.post("/addNewAttendee", async (req, res) => {
   }
 });
 
+
+
 router.post("/sendInvitation", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
@@ -488,12 +490,14 @@ router.post("/sendInvitation", async (req, res) => {
       });
     }
 
+
     // Add valid attendees to conference
     if (validAttendees.length > 0) {
       conference.totalAttendee.push(...validAttendees);
       // conference.totalAttendee.push(...validAttendees);
       await conference.save();
     }
+
 
     // Prepare response
     const response = {

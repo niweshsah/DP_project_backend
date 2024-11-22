@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const BusinessCardSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -34,6 +35,7 @@ const BusinessCardSchema = new mongoose.Schema({
         type: String,
     },
     });
+
 
 const BusinessCard = mongoose.model("BusinessCard", BusinessCardSchema);
 

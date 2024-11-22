@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const dailyEventsSchema = require("./eventCard");
 const slidingImages = require("./sliding_images");
+const BusinessCard = require("./businessCard");
 
 const ConferenceSchema = new Schema({
   name: {
@@ -202,6 +203,40 @@ const ConferenceSchema = new Schema({
       // required: true,
     },
   ],
+  BusinessCard: {
+    name: {
+        type: String,
+        required: true,
+    },
+    designation: {
+        type: String,
+        required: true,
+    },
+    organization: {
+        type: String,
+        required: true,
+    },
+    mobile: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+    },
+    about: {
+        type: String,
+    },
+    linkedIn: {
+        type: String,
+    },
+    location: {
+        type: String,
+    },
+    photo: {
+        type: String,
+    },
+    },
 });
 
 ConferenceSchema.pre("save", async function (next) {
@@ -226,5 +261,6 @@ ConferenceSchema.methods.comparePassword = async function (candidatePassword) {
     throw err;
   }
 };
+
 
 module.exports = mongoose.model("Conference", ConferenceSchema);
