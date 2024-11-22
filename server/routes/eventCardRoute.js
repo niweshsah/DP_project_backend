@@ -556,10 +556,11 @@ router.post("/acceptedInvitation", async (req, res) => {
     // Check if email already exists in the business card array
     const existingEmail = conference.business_card.find(card => card.email === email);
 
+    
     if (existingEmail) {
       return res.status(400).json({ error: "Email already exists" });
     }
-    
+
     conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
 
     await conference.save();
