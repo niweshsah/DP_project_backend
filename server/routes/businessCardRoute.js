@@ -55,17 +55,17 @@ router.post("/posting", async (req, res) => {
         .json({ error: "About should be less than 100 characters" });
     }
 
-    const businessCard_email = businessCard.findOne({ email });
+    const businessCard_email = BusinessCard.findOne({ email });
     if (businessCard_email) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
-    const businessCard_mobile = businessCard.findOne({ mobile });
+    const businessCard_mobile = BusinessCard.findOne({ mobile });
     if (businessCard_mobile) {
       return res.status(400).json({ error: "Mobile number already exists" });
     }
 
-    const businessCard_linkedIn = businessCard.findOne({ linkedIn });
+    const businessCard_linkedIn = BusinessCard.findOne({ linkedIn });
     if (businessCard_linkedIn) {
       return res.status(400).json({ error: "LinkedIn URL already exists" });
     }
