@@ -252,7 +252,7 @@ router.get("/attendees-false", async (req, res) => {
 
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
-    }
+    }payload
 
     const attendeesFalse = conference.attendeesFalse || [];
     const count = attendeesFalse.length;
@@ -295,7 +295,7 @@ router.get("/attendees-true", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
 
-    // Find the conference by its conferenceCode
+    // Find the conference bypayload its conferenceCode
     const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
@@ -371,6 +371,7 @@ router.post("/deleteAttendee", async (req, res) => {
 });
 
 
+
 router.post("/addNewAttendee", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
@@ -407,7 +408,7 @@ router.post("/addNewAttendee", async (req, res) => {
       message: "Attendee Added Successfully",
       data: conference.attendeesFalse[conference.attendeesFalse.length - 1],
     });
-    
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -416,6 +417,118 @@ router.post("/addNewAttendee", async (req, res) => {
     });
   }
 });
+
+router.post("/sendInvitation", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { attendees } = req.body; // Expect an array of attendees
+
+    // Validate request body
+    if (!Array.isArray(attendees) || attendees.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide an array of attendees",
+      });
+    }
+
+    // Find the conference
+    const conference = await Conference.findOne({ conferenceCode });
+    if (!conference) {
+      return res.status(404).json({
+        success: false,
+        message: "Conference not found",
+      });
+    }
+
+    // Validate each attendee and collect validation errors
+    const validationErrors = [];
+    const validAttendees = [];
+
+    for (let i = 0; i < attendees.length; i++) {
+      const attendee = attendees[i];
+
+      // Check if all required fields are present
+      if (!attendee.username || !attendee.name || !attendee.email) {
+        validationErrors.push({
+          index: i,
+          attendee,
+          error: "Missing required fields",
+        });
+        continue;
+      }
+
+      // Check if already registered in attendeesFalse
+      const isInFalse = conference.attendeesFalse.some(
+        (existing) =>
+          existing.username === attendee.username ||
+          existing.email === attendee.email
+      );
+
+      // Check if already registered in attendeesTrue
+      const isInTrue = conference.attendeesTrue.some(
+        (existing) =>
+          existing.username === attendee.username ||
+          existing.email === attendee.email
+      );
+
+      if (isInFalse || isInTrue) {
+        validationErrors.push({
+          index: i,
+          attendee,
+          error: "Already registered",
+        });
+        continue;
+      }
+
+      // If all validations pass, add to valid attendees
+      validAttendees.push({
+        username: attendee.username,
+        name: attendee.name,
+        email: attendee.email,
+      });
+    }
+
+    // Add valid attendees to conference
+    if (validAttendees.length > 0) {
+      conference.totalAttendee.push(...validAttendees);
+      // conference.totalAttendee.push(...validAttendees);
+      await conference.save();
+    }
+
+    // Prepare response
+    const response = {
+      success: true,
+      message: "Bulk registration processed",
+      summary: {
+        total: attendees.length,
+        successful: validAttendees.length,
+        failed: validationErrors.length,
+      },
+      validAttendees,
+      errors: validationErrors,
+    };
+
+    // If all failed, return 400 status
+    if (validAttendees.length === 0) {
+      return res.status(400).json({
+        ...response,
+        success: false,
+        message: "No valid attendees to register",
+      });
+    }
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Error in bulk registration:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+});
+
+// ------------------------------------------------------------------------------------
 
 router.post("/registerAttendees", async (req, res) => {
   try {
