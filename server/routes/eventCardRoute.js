@@ -553,12 +553,13 @@ router.post("/acceptedInvitation", async (req, res) => {
       return res.status(404).json({ error: "Conference not found" });
     }
 
-    const conference_email = await conference.business_card.find({ email });
+    // Check if email already exists in the business card array
+    const existingEmail = conference.business_card.find(card => card.email === email);
 
-    if (conference_email) {
+    if (existingEmail) {
       return res.status(400).json({ error: "Email already exists" });
     }
-
+    
     conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
 
     await conference.save();
