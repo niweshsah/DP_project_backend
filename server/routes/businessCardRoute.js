@@ -17,7 +17,6 @@ router.get("/getInfo/:id", async (req, res) => {
 });
 
 router.post("/posting", async (req, res) => {
-
   try {
     const {
       name,
@@ -55,18 +54,24 @@ router.post("/posting", async (req, res) => {
         .json({ error: "About should be less than 100 characters" });
     }
 
-    const businessCard_email = BusinessCard.findOne({ email });
-    if (businessCard_email) {
+    const duplicateChecks = await Promise.all([
+      BusinessCard.findOne({ email }),
+      BusinessCard.findOne({ mobile }),
+      BusinessCard.findOne({ linkedIn }),
+    ]);
+
+    const [businessCardEmail, businessCardMobile, businessCardLinkedIn] =
+      duplicateChecks;
+
+    if (businessCardEmail) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
-    const businessCard_mobile = BusinessCard.findOne({ mobile });
-    if (businessCard_mobile) {
+    if (businessCardMobile) {
       return res.status(400).json({ error: "Mobile number already exists" });
     }
 
-    const businessCard_linkedIn = BusinessCard.findOne({ linkedIn });
-    if (businessCard_linkedIn) {
+    if (businessCardLinkedIn) {
       return res.status(400).json({ error: "LinkedIn URL already exists" });
     }
 
