@@ -448,7 +448,7 @@ router.post("/acceptedInvitation", async (req, res) => {
     const { name, designation, organization, mobile, email, about, linkedIn, location } = req.body;
 
     const conference = await Conference.findOne({ conferenceCode });
-    console.log(conferenceCode);
+    // console.log(conferenceCode);
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
     }
@@ -463,6 +463,8 @@ router.post("/acceptedInvitation", async (req, res) => {
 
     conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
 
+    console.log(conference.business_card);
+    
     await conference.save();
 
     res.status(200).json({ message: "Business card added successfully" });
