@@ -211,23 +211,23 @@ const ConferenceSchema = new Schema({
   business_card: {
     name: {
         type: String,
-        required: true,
+        // required: true,
     },
     designation: {
         type: String,
-        required: true,
+        // required: true,
     },
     organization: {
         type: String,
-        required: true,
+        // required: true,
     },
     mobile: {
         type: String,
-        required: true,
+        // required: true,
     },
     email: {
         type: String,
-        required: true,
+        // required: true,
     },
     about: {
         type: String,
