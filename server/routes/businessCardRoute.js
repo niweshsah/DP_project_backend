@@ -16,87 +16,67 @@ router.get("/getInfo/:id", async (req, res) => {
   }
 });
 
+router.post("/posting", async (req, res) => {
 
+  try {
+    const {
+      name,
+      designation,
+      organization,
+      mobile,
+      email,
+      about,
+      linkedIn,
+      location,
+      photo,
+    } = req.body;
 
-
-router.post(
-  "/posting",
-  // [
-  //     body("name").notEmpty().withMessage("Name is required"),
-  //     body("designation").notEmpty().withMessage("Designation is required"),
-  //     body("organization").notEmpty().withMessage("Organization is required"),
-  //     body("mobile").isMobilePhone().withMessage("Invalid mobile number"),
-  //     body("email").isEmail().withMessage("Invalid email address"),
-  // ],
-
-  async (req, res) => {
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-    //     return res.status(400).json({ errors: errors.array() });
-    // }
-    try {
-      const {
-        name,
-        designation,
-        organization,
-        mobile,
-        email,
-        about,
-        linkedIn,
-        location,
-        photo,
-      } = req.body;
-
-
-      if (!name || !designation || !organization || !mobile || !email) {
-        return res.status(400).json({ error: "All fields are required" });
-      }
-
-      if (mobile.length !== 10) {
-        return res.status(400).json({
-          error: "Invalid mobile number, enter 10 digit mobile number",
-        });
-      }
-
-      if (email.indexOf("@") === -1) {
-        return res.status(400).json({ error: "Invalid email address" });
-      }
-
-      if (linkedIn && linkedIn.indexOf("linkedin.com") === -1) {
-        return res.status(400).json({ error: "Invalid LinkedIn URL" });
-      }
-
-      if (about && about.length > 100) {
-        return res
-          .status(400)
-          .json({ error: "About should be less than 100 characters" });
-      }
-
-      const businessCard_email = businessCard.findOne({ email });
-      if (businessCard_email) {
-        return res.status(400).json({ error: "Email already exists" });
-      }
-
-      const businessCard_mobile = businessCard.findOne({ mobile });
-      if (businessCard_mobile) {
-        return res.status(400).json({ error: "Mobile number already exists" });
-      }
-
-      const businessCard_linkedIn = businessCard.findOne({ linkedIn });
-      if (businessCard_linkedIn) {
-        return res.status(400).json({ error: "LinkedIn URL already exists" });
-      }
-
-      const businessCard = new BusinessCard(req.body);
-      await businessCard.save();
-      res.status(201).json(businessCard);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+    if (!name || !designation || !organization || !mobile || !email) {
+      return res.status(400).json({ error: "All fields are required" });
     }
+
+    if (mobile.length !== 10) {
+      return res.status(400).json({
+        error: "Invalid mobile number, enter 10 digit mobile number",
+      });
+    }
+
+    if (email.indexOf("@") === -1) {
+      return res.status(400).json({ error: "Invalid email address" });
+    }
+
+    if (linkedIn && linkedIn.indexOf("linkedin.com") === -1) {
+      return res.status(400).json({ error: "Invalid LinkedIn URL" });
+    }
+
+    if (about && about.length > 100) {
+      return res
+        .status(400)
+        .json({ error: "About should be less than 100 characters" });
+    }
+
+    const businessCard_email = businessCard.findOne({ email });
+    if (businessCard_email) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
+    const businessCard_mobile = businessCard.findOne({ mobile });
+    if (businessCard_mobile) {
+      return res.status(400).json({ error: "Mobile number already exists" });
+    }
+
+    const businessCard_linkedIn = businessCard.findOne({ linkedIn });
+    if (businessCard_linkedIn) {
+      return res.status(400).json({ error: "LinkedIn URL already exists" });
+    }
+
+    const businessCard = new BusinessCard(req.body);
+    await businessCard.save();
+    res.status(201).json(businessCard);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
-);
-
-
+});
 
 router.get("/", async (req, res) => {
   try {
