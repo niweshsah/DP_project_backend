@@ -240,6 +240,30 @@ router.get("/food", async (req, res) => {
   }
 });
 
+
+
+
+
+router.get("/events", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference
+      .findOne({ conferenceCode: conferenceCode })
+      .populate("events");
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+    console.log(conferenceCode);
+    console.log(conference.events);
+    res.status(200).json(conference.events);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+);
+
+
 // ---------------------------------------------------------------------------------------------------------------
 
 // GET route to fetch attendeesFalse
@@ -740,7 +764,7 @@ router.put("/move-attendee", async (req, res) => {
       (attendee) => attendee.username === username
     );
 
-    
+
     if (attendeeIndex === -1) {
       return res
         .status(404)

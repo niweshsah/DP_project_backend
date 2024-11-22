@@ -195,8 +195,6 @@ router.get("/:conferenceCode/checkConferenceCode", async (req, res) => {
 
 
 
-
-
 router.post("/checkConferenceCodeAndPassword", async (req, res) => {
   try {
     const { conferenceCode, password } = req.body;
@@ -250,6 +248,7 @@ router.use('/:conferenceId/SlidingImages', SlidingImagesRoute);
 
 const EventCardRoute = require('../routes/eventCardRoute');
 router.use('/:conferenceCode/eventCard', EventCardRoute);
+
 
 
 // const EmailRouter = require("../utils/sendEmail");
