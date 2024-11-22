@@ -466,7 +466,7 @@ router.post("/acceptedInvitation", async (req, res) => {
     // console.log(conference.business_card);
 
     conference.attendeesFalse.push({
-      username,
+      username: email, // Set username equal to email
       name,
       email,
     });
