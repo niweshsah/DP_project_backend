@@ -740,6 +740,7 @@ router.put("/move-attendee", async (req, res) => {
       (attendee) => attendee.username === username
     );
 
+    
     if (attendeeIndex === -1) {
       return res
         .status(404)
