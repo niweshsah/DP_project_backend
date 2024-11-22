@@ -291,6 +291,11 @@ router.get("/getFriends/:username", async (req, res) => {
 
 const conferenceRoutes = require("./conferenceRoute"); // Import the conference route
 router.use("/conference", conferenceRoutes); // use the conferenceRoutes
+
+const businessCardRoute = require("./businessCardRoute"); // Import the visitingCard route
+router.use("/businessCard", businessCardRoute); // use the businessCardRoute
 // Add jwt middleware to the route
 
 module.exports = router; // Export the router
+
+
