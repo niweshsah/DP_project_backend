@@ -55,6 +55,7 @@ async function sendQRCodeEmail(user) {
       // ],
     };
 
+    
     // Send the email
     await transporter.sendMail(mailOptions);
     console.log(`QR code email sent to ${user.email}`);

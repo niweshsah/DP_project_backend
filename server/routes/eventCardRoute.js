@@ -479,7 +479,9 @@ router.post("/sendInvitation", async (req, res) => {
           existing.email === attendee.email
       );
 
-      if (isInFalse || isInTrue) {
+
+      if (isInFalse || isInTrue || isinTotal) {
+      // if (isInFalse || isInTrue) {
         validationErrors.push({
           index: i,
           attendee,
@@ -487,6 +489,7 @@ router.post("/sendInvitation", async (req, res) => {
         });
         continue;
       }
+
 
       // If all validations pass, add to valid attendees
       validAttendees.push({
@@ -537,6 +540,29 @@ router.post("/sendInvitation", async (req, res) => {
     });
   }
 });
+
+
+router.post("/acceptedInvitation", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name, designation, organization, mobile, email, about, linkedIn, location } = req.body;
+
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
+
+    await conference.save();
+
+    res.status(200).json({ message: "Business card added successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 // ------------------------------------------------------------------------------------
 

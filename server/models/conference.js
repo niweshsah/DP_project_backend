@@ -65,8 +65,6 @@ const ConferenceSchema = new Schema({
     default: {},
   },
 
-
-
   totalAttendee: [
     {
       username: {
@@ -80,8 +78,6 @@ const ConferenceSchema = new Schema({
       },
     },
   ],
-
-
 
   attendeesFalse: [
     {
@@ -208,40 +204,42 @@ const ConferenceSchema = new Schema({
     },
   ],
 
-  business_card: {
-    name: {
+  business_card: [
+    {
+      name: {
         type: String,
         // required: true,
-    },
-    designation: {
+      },
+      designation: {
         type: String,
         // required: true,
-    },
-    organization: {
+      },
+      organization: {
         type: String,
         // required: true,
-    },
-    mobile: {
+      },
+      mobile: {
         type: String,
         // required: true,
-    },
-    email: {
+      },
+      email: {
         type: String,
         // required: true,
-    },
-    about: {
+      },
+      about: {
         type: String,
-    },
-    linkedIn: {
+      },
+      linkedIn: {
         type: String,
-    },
-    location: {
+      },
+      location: {
         type: String,
-    },
-    photo: {
+      },
+      photo: {
         type: String,
+      },
     },
-    },
+  ],
 });
 
 ConferenceSchema.pre("save", async function (next) {
@@ -266,6 +264,5 @@ ConferenceSchema.methods.comparePassword = async function (candidatePassword) {
     throw err;
   }
 };
-
 
 module.exports = mongoose.model("Conference", ConferenceSchema);
