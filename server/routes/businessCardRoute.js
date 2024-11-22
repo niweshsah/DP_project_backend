@@ -4,9 +4,9 @@ const { body, validationResult } = require("express-validator");
 
 const BusinessCard = require("../models/businessCard");
 
-router.get("/getInfo/:id", async (req, res) => {
+router.get("/getInfo/:email", async (req, res) => {
   try {
-    const businessCard = await BusinessCard.findById(req.params.id);
+    const businessCard = await BusinessCard.findOne({ email: req.params.email });
     if (!businessCard) {
       return res.status(404).json({ error: "BusinessCard not found" });
     }

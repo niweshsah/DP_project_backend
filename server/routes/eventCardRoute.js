@@ -418,6 +418,58 @@ router.post("/addNewAttendee", async (req, res) => {
   }
 });
 
+router.get("/getInfo/:email", async (req, res) => {
+  try {
+    // const businessCard = await BusinessCard.findOne({ email: req.params.email });
+    const { conferenceCode } = req.params;
+   const conference = await Conference.findOne({ conferenceCode });
+
+   const email = req.params.email;
+
+   if (!conference) {
+     return res.status(404).json({ error: "Conference not found" });
+   }
+
+   const businessCard = conference.business_card.find(card => card.email === email);
+
+    if (!businessCard) {
+      return res.status(404).json({ error: "BusinessCard not found" });
+    }
+    res.status(200).json(businessCard);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+router.post("/acceptedInvitation", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const { name, designation, organization, mobile, email, about, linkedIn, location } = req.body;
+
+    const conference = await Conference.findOne({ conferenceCode });
+    console.log(conferenceCode);
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    // Check if email already exists in the business card array
+    const existingEmail = conference.business_card.find(card => card.email === email);
+
+
+    if (existingEmail) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
+    conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
+
+    await conference.save();
+
+    res.status(200).json({ message: "Business card added successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 router.post("/sendInvitation", async (req, res) => {
@@ -542,34 +594,6 @@ router.post("/sendInvitation", async (req, res) => {
 });
 
 
-router.post("/acceptedInvitation", async (req, res) => {
-  try {
-    const { conferenceCode } = req.params;
-    const { name, designation, organization, mobile, email, about, linkedIn, location } = req.body;
-
-    const conference = await Conference.findOne({ conferenceCode });
-    console.log(conferenceCode);
-    if (!conference) {
-      return res.status(404).json({ error: "Conference not found" });
-    }
-
-    // Check if email already exists in the business card array
-    const existingEmail = conference.business_card.find(card => card.email === email);
-
-
-    if (existingEmail) {
-      return res.status(400).json({ error: "Email already exists" });
-    }
-
-    conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
-
-    await conference.save();
-
-    res.status(200).json({ message: "Business card added successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 
 // ------------------------------------------------------------------------------------
