@@ -244,9 +244,11 @@ router.get("/food", async (req, res) => {
 
 
 
-router.get("/events", async (req, res) => {
+router.get("/events_all", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
+    console.log("hi");
+
     const conference = await Conference
       .findOne({ conferenceCode: conferenceCode })
       .populate("events");
@@ -254,6 +256,7 @@ router.get("/events", async (req, res) => {
       return res.status(404).json({ error: "Conference not found" });
     }
     console.log(conferenceCode);
+    console.log("events");
     console.log(conference.events);
     res.status(200).json(conference.events);
 
@@ -262,6 +265,7 @@ router.get("/events", async (req, res) => {
   }
 }
 );
+
 
 
 // ---------------------------------------------------------------------------------------------------------------
