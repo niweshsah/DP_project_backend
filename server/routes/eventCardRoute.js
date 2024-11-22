@@ -466,6 +466,12 @@ router.post("/sendInvitation", async (req, res) => {
           existing.email === attendee.email
       );
 
+      const isinTotal = conference.totalAttendee.some(
+        (existing) =>
+          existing.username === attendee.username ||
+          existing.email === attendee.email
+      );
+
       // Check if already registered in attendeesTrue
       const isInTrue = conference.attendeesTrue.some(
         (existing) =>
