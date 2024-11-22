@@ -16,6 +16,9 @@ router.get("/getInfo/:id", async (req, res) => {
   }
 });
 
+
+
+
 router.post(
   "/posting",
   // [
@@ -44,7 +47,7 @@ router.post(
         photo,
       } = req.body;
 
-      
+
       if (!name || !designation || !organization || !mobile || !email) {
         return res.status(400).json({ error: "All fields are required" });
       }
@@ -63,10 +66,10 @@ router.post(
         return res.status(400).json({ error: "Invalid LinkedIn URL" });
       }
 
-      if (about && about.length > 50) {
+      if (about && about.length > 100) {
         return res
           .status(400)
-          .json({ error: "About should be less than 50 characters" });
+          .json({ error: "About should be less than 100 characters" });
       }
 
       const businessCard_email = businessCard.findOne({ email });
@@ -92,6 +95,8 @@ router.post(
     }
   }
 );
+
+
 
 router.get("/", async (req, res) => {
   try {
