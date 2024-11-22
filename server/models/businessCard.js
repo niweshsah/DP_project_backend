@@ -26,7 +26,10 @@ const BusinessCardSchema = new mongoose.Schema({
     },
     linkedIn: {
         type: String,
-    }
+    },
+    location: {
+        type: String,
+    },
     });
 
 const BusinessCard = mongoose.model("BusinessCard", BusinessCardSchema);
