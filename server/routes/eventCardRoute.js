@@ -474,6 +474,26 @@ router.get("/getInfo/:email", async (req, res) => {
 });
 
 
+router.get("/getAcceptedAttendees", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference
+      .findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    const AttendeeAccepted = conference.attendeeAccepted || [];
+
+    const length = AttendeeAccepted.length;
+
+    return res.status(200).json({ count: length, attendees: AttendeeAccepted });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 router.post("/acceptedInvitation", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
