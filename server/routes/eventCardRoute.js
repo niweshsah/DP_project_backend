@@ -759,62 +759,144 @@ router.post("/registerAttendees", async (req, res) => {
 
 // ------------------------------------------------------------------------------
 
-router.post("/add-attendee-for-event", async (req, res) => {
-  const { conferenceCode, eventCode, username, name, email } = req.body;
+// router.post("/add-attendee-for-event", async (req, res) => {
+//   const { conferenceCode, eventCode, username, name, email } = req.body;
 
-  if (!conferenceCode || !eventCode || !username || !name || !email) {
-    return res
-      .status(400)
-      .json({ error: "conferenceCode, eventCode, username, name, and email are required" });
+//   if (!conferenceCode || !eventCode || !username || !name || !email) {
+//     return res
+//       .status(400)
+//       .json({ error: "conferenceCode, eventCode, username, name, and email are required" });
+//   }
+
+//   try {
+//     // Find the conference by its code
+//     const conference = await Conference.findOne({ conferenceCode });
+
+//     if (!conference) {
+//       return res.status(404).json({ error: "Conference not found" });
+//     }
+
+//     // Access the specific event using the eventCode
+//     const event = conference.events.get(eventCode);
+
+//     if (!event) {
+//       return res.status(404).json({ error: "Event not found for the given eventCode" });
+//     }
+
+//     // Check if the attendee is already in the attendeesTrueForEvent array
+//     const isAlreadyAttendee = event.attendeesTrueForEvent.some(
+//       (attendee) => attendee.username === username
+//     );
+
+//     if (isAlreadyAttendee) {
+//       return res.status(400).json({ error: "Attendee is already in attendeesTrueForEvent" });
+//     }
+
+//     // Add the attendee to the attendeesTrueForEvent array
+//     event.attendeesTrueForEvent.push({
+//       username,
+//       name,
+//       email,
+//     });
+
+//     // Update the event in the Map
+//     conference.events.set(eventCode, event);
+
+//     // Save the updated conference document
+//     await conference.save();
+
+//     return res.status(200).json({
+//       message: "Attendee successfully added to attendeesTrueForEvent",
+//       eventCode,
+//       attendee: { username, name, email },
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
+
+
+
+router.post("/add-attendee-for-event", async (req, res) => {
+  const { eventCode, username, name, email } = req.body;
+
+  if (!eventCode || !username || !name || !email) {
+    return res.status(400).json({ 
+      error: "eventCode, username, name, and email are required" 
+    });
   }
 
   try {
-    // Find the conference by its code
-    const conference = await Conference.findOne({ conferenceCode });
+    // Find all conferences
+    const conferences = await Conference.find({});
+    let foundConference = null;
+    let foundEventKey = null;
+    let foundEventArray = null;
 
-    if (!conference) {
-      return res.status(404).json({ error: "Conference not found" });
+    // Search for the event across all conferences
+    for (const conference of conferences) {
+      for (const [mapKey, eventArray] of conference.events) {
+        const eventExists = eventArray.some(event => event.eventCode === eventCode);
+        if (eventExists) {
+          foundConference = conference;
+          foundEventKey = mapKey;
+          foundEventArray = eventArray;
+          break;
+        }
+      }
+      if (foundConference) break;
     }
 
-    // Access the specific event using the eventCode
-    const event = conference.events.get(eventCode);
-
-    if (!event) {
+    if (!foundConference || !foundEventArray) {
       return res.status(404).json({ error: "Event not found for the given eventCode" });
     }
 
-    // Check if the attendee is already in the attendeesTrueForEvent array
-    const isAlreadyAttendee = event.attendeesTrueForEvent.some(
+    // Find the specific event in the array
+    const eventIndex = foundEventArray.findIndex(event => event.eventCode === eventCode);
+    
+    if (eventIndex === -1) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    // Check if attendee already exists
+    const isAlreadyAttendee = foundEventArray[eventIndex].attendeesTrueForEvent.some(
       (attendee) => attendee.username === username
     );
 
     if (isAlreadyAttendee) {
-      return res.status(400).json({ error: "Attendee is already in attendeesTrueForEvent" });
+      return res.status(400).json({ error: "Attendee is already registered for this event" });
     }
 
-    // Add the attendee to the attendeesTrueForEvent array
-    event.attendeesTrueForEvent.push({
+    // Add the new attendee
+    foundEventArray[eventIndex].attendeesTrueForEvent.push({
       username,
       name,
       email,
+      timestamp: new Date()
     });
 
-    // Update the event in the Map
-    conference.events.set(eventCode, event);
+    // Update the event array in the Map
+    foundConference.events.set(foundEventKey, foundEventArray);
 
-    // Save the updated conference document
-    await conference.save();
+    // Save the updated conference
+    await foundConference.save();
 
     return res.status(200).json({
-      message: "Attendee successfully added to attendeesTrueForEvent",
+      message: "Attendee successfully added to event",
       eventCode,
-      attendee: { username, name, email },
+      conferenceName: foundConference.name,
+      conferenceCode: foundConference.conferenceCode,
+      attendee: { username, name, email }
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 
@@ -863,7 +945,7 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
       return res.status(404).json({ error: "Conference not found" });
     }
 
-    // console.log(conference.events); // Debug log to inspect the structure of events
+    console.log(conference.events); // Debug log to inspect the structure of events
 
     // Search for the event by eventCode in all date entries
     let attendeesTrueForEvent = null;
