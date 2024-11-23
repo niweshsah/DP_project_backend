@@ -863,7 +863,7 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
       return res.status(404).json({ error: "Conference not found" });
     }
 
-    console.log(conference.events); // Debug log to inspect the structure of events
+    // console.log(conference.events); // Debug log to inspect the structure of events
 
     // Search for the event by eventCode in all date entries
     let attendeesTrueForEvent = null;
