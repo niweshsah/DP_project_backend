@@ -860,8 +860,8 @@ router.post("/add-attendee-for-event", async (req, res) => {
       return res.status(404).json({ error: "Conference not found" });
     }
 
-    const attendee = conference.totalAttendee.find({ email });
-
+    // const attendee = conference.totalAttendee.find({ email });
+    const attendee = conference.totalAttendee.find(att => att.email === email);
     if (!attendee) {
       return res.status(404).json({ error: "Attendee not found" });
     }
