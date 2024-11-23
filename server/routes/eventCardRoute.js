@@ -818,42 +818,37 @@ router.post("/registerAttendees", async (req, res) => {
 
 
 
-
 router.post("/add-attendee-for-event", async (req, res) => {
-  const {conferenceCode, eventCode, username, name, email } = req.body;
+  const { conferenceCode, eventCode, username, name, email } = req.body;
 
-  if (!eventCode || !username || !name || !email) {
+  if (!eventCode || !username || !name || !email || !conferenceCode) {
     return res.status(400).json({ 
-      error: "eventCode, username, name, and email are required" 
+      error: "conferenceCode, eventCode, username, name, and email are required" 
     });
   }
 
   try {
-    // Find all conferences
-    const conferences = await Conference.findOne({conferenceCode});
-    let foundConference = null;
+    // Find the specific conference
+    const conference = await Conference.findOne({ conferenceCode });
+    
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
     let foundEventKey = null;
     let foundEventArray = null;
 
-    if(!conferences){
-      
-    }
-
-    // Search for the event across all conferences
-    for (const conference of conferences) {
-      for (const [mapKey, eventArray] of conference.events) {
-        const eventExists = eventArray.some(event => event.eventCode === eventCode);
-        if (eventExists) {
-          foundConference = conference;
-          foundEventKey = mapKey;
-          foundEventArray = eventArray;
-          break;
-        }
+    // Search for the event in the conference's events
+    for (const [mapKey, eventArray] of conference.events) {
+      const eventExists = eventArray.some(event => event.eventCode === eventCode);
+      if (eventExists) {
+        foundEventKey = mapKey;
+        foundEventArray = eventArray;
+        break;
       }
-      if (foundConference) break;
     }
 
-    if (!foundConference || !foundEventArray) {
+    if (!foundEventArray) {
       return res.status(404).json({ error: "Event not found for the given eventCode" });
     }
 
@@ -882,16 +877,16 @@ router.post("/add-attendee-for-event", async (req, res) => {
     });
 
     // Update the event array in the Map
-    foundConference.events.set(foundEventKey, foundEventArray);
+    conference.events.set(foundEventKey, foundEventArray);
 
     // Save the updated conference
-    await foundConference.save();
+    await conference.save();
 
     return res.status(200).json({
       message: "Attendee successfully added to event",
       eventCode,
-      conferenceName: foundConference.name,
-      conferenceCode: foundConference.conferenceCode,
+      conferenceName: conference.name,
+      conferenceCode: conference.conferenceCode,
       attendee: { username, name, email }
     });
 
@@ -900,7 +895,6 @@ router.post("/add-attendee-for-event", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 
 
@@ -978,6 +972,56 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
 });
 
 
+
+
+// ---------------------------------------------------------------------------
+
+
+// Get events for a specific conference
+router.get("/get-conference-events/", async (req, res) => {
+  const { conferenceCode } = req.params;
+ 
+  try {
+    const conference = await Conference.findOne({ conferenceCode });
+ 
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+ 
+    let conferenceEvents = [];
+ 
+    // Iterate through the events Map
+    for (const [mapKey, eventArray] of conference.events) {
+      const eventsWithDetails = eventArray.map(event => ({
+        title: event.title,
+        time: event.time,
+        venue: event.venue,
+        eventCode: event.eventCode,
+        totalAttendees: event.attendeesTrueForEvent?.length || 0
+      }));
+      conferenceEvents = [...conferenceEvents, ...eventsWithDetails];
+    }
+ 
+    // Sort events by title
+    conferenceEvents.sort((a, b) => a.title.localeCompare(b.title));
+ 
+    // return res.status(200).json({
+    //   conferenceName: conference.name,
+    //   conferenceCode: conference.conferenceCode,
+    //   location: conference.location,
+    //   startDate: conference.startDate,
+    //   endDate: conference.endDate,
+    //   totalEvents: conferenceEvents.length,
+    //   events: conferenceEvents
+    // });
+
+    return res.status(200).json(conferenceEvents);
+ 
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+ });
 
 
 // -----------------------------------------------------------------------------------------------
