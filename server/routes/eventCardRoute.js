@@ -1093,7 +1093,7 @@ router.get("/get-business-card2", async (req, res) => {
 // -----------------------------------------------------------------------------------------------
 
 // Route t  fo move a user from `attendeesFalse` to `attendeesTrue`
-router.put("/move-attendee", async (req, res) => {
+router.post("/move-attendee", async (req, res) => {
   const { conferenceCode } = req.params;
   const { username } = req.body;
 
