@@ -450,6 +450,8 @@ router.post("/addNewAttendee", async (req, res) => {
   }
 });
 
+
+
 router.get("/getInfo/:email", async (req, res) => {
   try {
     // const businessCard = await BusinessCard.findOne({ email: req.params.email });
@@ -472,6 +474,8 @@ router.get("/getInfo/:email", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
 
 
 router.get("/getAcceptedAttendees", async (req, res) => {
