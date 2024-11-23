@@ -15,6 +15,8 @@ router.get("/test", async (req, res) => {
   }
 });
 
+
+
 router.post("/addNewEvent", async (req, res) => {
   try {
     //   const
@@ -35,6 +37,8 @@ router.post("/addNewEvent", async (req, res) => {
         { title, time, venue, eventCode, attendeesTrueForEvent },
       ]);
     }
+
+
     //   attendee.foodCouponUsed.set(conferenceId, {}); // give food coupon on registration and set the value of the key to an empty object as default values are already set in the model
 
     //   attendee.conferenceAttendance.set(conferenceId, { attended: false });
@@ -499,6 +503,12 @@ router.post("/acceptedInvitation", async (req, res) => {
       email,
     });
 
+    conference.attendeeAccepted.push({
+      username: email, // Set username equal to email
+      name,
+      email,
+    });
+
     await conference.save();
 
 
@@ -745,6 +755,68 @@ router.post("/registerAttendees", async (req, res) => {
     });
   }
 });
+
+
+// ------------------------------------------------------------------------------
+
+router.post("/add-attendee-for-event", async (req, res) => {
+  const { conferenceCode, eventCode, username, name, email } = req.body;
+
+  if (!conferenceCode || !eventCode || !username || !name || !email) {
+    return res
+      .status(400)
+      .json({ error: "conferenceCode, eventCode, username, name, and email are required" });
+  }
+
+  try {
+    // Find the conference by its code
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    // Access the specific event using the eventCode
+    const event = conference.events.get(eventCode);
+
+    if (!event) {
+      return res.status(404).json({ error: "Event not found for the given eventCode" });
+    }
+
+    // Check if the attendee is already in the attendeesTrueForEvent array
+    const isAlreadyAttendee = event.attendeesTrueForEvent.some(
+      (attendee) => attendee.username === username
+    );
+
+    if (isAlreadyAttendee) {
+      return res.status(400).json({ error: "Attendee is already in attendeesTrueForEvent" });
+    }
+
+    // Add the attendee to the attendeesTrueForEvent array
+    event.attendeesTrueForEvent.push({
+      username,
+      name,
+      email,
+    });
+
+    // Update the event in the Map
+    conference.events.set(eventCode, event);
+
+    // Save the updated conference document
+    await conference.save();
+
+    return res.status(200).json({
+      message: "Attendee successfully added to attendeesTrueForEvent",
+      eventCode,
+      attendee: { username, name, email },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// -----------------------------------------------------------------------------------------------
 
 // Route t  fo move a user from `attendeesFalse` to `attendeesTrue`
 router.put("/move-attendee", async (req, res) => {

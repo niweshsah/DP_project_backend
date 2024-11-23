@@ -65,6 +65,24 @@ const ConferenceSchema = new Schema({
     default: {},
   },
 
+  attendeeAccepted: [
+    {
+      username: {
+        type: String, // username
+      },
+      name: {
+        type: String,
+      },
+      email: {
+        type: String,
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+
   totalAttendee: [
     {
       username: {
