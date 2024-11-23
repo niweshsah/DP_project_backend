@@ -818,7 +818,7 @@ router.post("/add-attendee-for-event", async (req, res) => {
 
 
 
-router.get("/get-attendees-for-event/:conferenceCode/:eventCode", async (req, res) => {
+router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
   const { conferenceCode, eventCode } = req.params;
 
   try {
