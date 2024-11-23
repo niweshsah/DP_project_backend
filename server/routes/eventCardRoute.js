@@ -1057,6 +1057,28 @@ router.get("/get-conference-events/", async (req, res) => {
  });
 
 
+
+ router.get("/get-business-card2", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+    const conference = await Conference.findOne
+      ({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+
+    }
+
+
+    const businessCard = conference.business_card || [];
+
+    const count = businessCard.length;
+
+    return res.status(200).json({ count: count, businessCard: businessCard });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
 // -----------------------------------------------------------------------------------------------
 
 // Route t  fo move a user from `attendeesFalse` to `attendeesTrue`
