@@ -843,12 +843,13 @@ router.post("/registerAttendees", async (req, res) => {
 
 
 router.post("/add-attendee-for-event", async (req, res) => {
-  const { conferenceCode, eventCode, username, name, email } = req.body;
+  const { conferenceCode, eventCode, email } = req.body;
 
-  if (!eventCode || !username || !name || !email || !conferenceCode) {
+
+  if (!eventCode ||  !email || !conferenceCode) {
     return res.status(400).json({ 
-      error: "conferenceCode, eventCode, username, name, and email are required" 
-    });
+      error: "conferenceCode, eventCode,  and email are required" 
+    })
   }
 
   try {
@@ -858,6 +859,14 @@ router.post("/add-attendee-for-event", async (req, res) => {
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
     }
+
+    const attendee = conference.totalAttendee.find({ email });
+
+    if (!attendee) {
+      return res.status(404).json({ error: "Attendee not found" });
+    }
+
+    const { username, name } = attendee;
 
     let foundEventKey = null;
     let foundEventArray = null;
