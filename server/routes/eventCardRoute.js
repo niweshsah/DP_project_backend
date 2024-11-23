@@ -15,8 +15,6 @@ router.get("/test", async (req, res) => {
   }
 });
 
-
-
 router.post("/addNewEvent", async (req, res) => {
   try {
     //   const
@@ -37,7 +35,6 @@ router.post("/addNewEvent", async (req, res) => {
         { title, time, venue, eventCode, attendeesTrueForEvent },
       ]);
     }
-
 
     //   attendee.foodCouponUsed.set(conferenceId, {}); // give food coupon on registration and set the value of the key to an empty object as default values are already set in the model
 
@@ -244,18 +241,14 @@ router.get("/food", async (req, res) => {
   }
 });
 
-
-
-
-
 router.get("/events_all", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
     console.log("hi");
 
-    const conference = await Conference
-      .findOne({ conferenceCode: conferenceCode })
-      .populate("events");
+    const conference = await Conference.findOne({
+      conferenceCode: conferenceCode,
+    }).populate("events");
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
     }
@@ -263,14 +256,10 @@ router.get("/events_all", async (req, res) => {
     console.log("events");
     console.log(conference.events);
     res.status(200).json(conference.events);
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
-);
-
-
+});
 
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -284,7 +273,8 @@ router.get("/attendees-false", async (req, res) => {
 
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
-    }payload
+    }
+    payload;
 
     const attendeesFalse = conference.attendeesFalse || [];
     const count = attendeesFalse.length;
@@ -321,8 +311,6 @@ router.get("/total-attendees", async (req, res) => {
   }
 });
 
-
-
 router.get("/attendees-true", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
@@ -345,7 +333,6 @@ router.get("/attendees-true", async (req, res) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
-
 
 router.post("/deleteAttendee", async (req, res) => {
   try {
@@ -370,7 +357,6 @@ router.post("/deleteAttendee", async (req, res) => {
     const totalAttendeeIndex = conference.totalAttendee.findIndex(
       (user) => user.username === username
     );
-
 
     if (
       attendeeFalseIndex === -1 &&
@@ -401,8 +387,6 @@ router.post("/deleteAttendee", async (req, res) => {
       .json({ error: "An error occurred while processing the request" });
   }
 });
-
-
 
 router.post("/addNewAttendee", async (req, res) => {
   try {
@@ -440,7 +424,6 @@ router.post("/addNewAttendee", async (req, res) => {
       message: "Attendee Added Successfully",
       data: conference.attendeesFalse[conference.attendeesFalse.length - 1],
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -450,21 +433,21 @@ router.post("/addNewAttendee", async (req, res) => {
   }
 });
 
-
-
 router.get("/getInfo/:email", async (req, res) => {
   try {
     // const businessCard = await BusinessCard.findOne({ email: req.params.email });
     const { conferenceCode } = req.params;
-   const conference = await Conference.findOne({ conferenceCode });
+    const conference = await Conference.findOne({ conferenceCode });
 
-   const email = req.params.email;
+    const email = req.params.email;
 
-   if (!conference) {
-     return res.status(404).json({ error: "Conference not found" });
-   }
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
 
-   const businessCard = conference.business_card.find(card => card.email === email);
+    const businessCard = conference.business_card.find(
+      (card) => card.email === email
+    );
 
     if (!businessCard) {
       return res.status(404).json({ error: "BusinessCard not found" });
@@ -475,14 +458,10 @@ router.get("/getInfo/:email", async (req, res) => {
   }
 });
 
-
-
-
 router.get("/getAcceptedAttendees", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
-    const conference = await Conference
-      .findOne({ conferenceCode });
+    const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
@@ -501,7 +480,16 @@ router.get("/getAcceptedAttendees", async (req, res) => {
 router.post("/acceptedInvitation", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
-    const { name, designation, organization, mobile, email, about, linkedIn, location } = req.body;
+    const {
+      name,
+      designation,
+      organization,
+      mobile,
+      email,
+      about,
+      linkedIn,
+      location,
+    } = req.body;
 
     const conference = await Conference.findOne({ conferenceCode });
     // console.log(conferenceCode);
@@ -510,14 +498,24 @@ router.post("/acceptedInvitation", async (req, res) => {
     }
 
     // Check if email already exists in the business card array
-    const existingEmail = conference.business_card.find(card => card.email === email);
-
+    const existingEmail = conference.business_card.find(
+      (card) => card.email === email
+    );
 
     if (existingEmail) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
-    conference.business_card.push({ name, designation, organization, mobile, email, about, linkedIn, location });
+    conference.business_card.push({
+      name,
+      designation,
+      organization,
+      mobile,
+      email,
+      about,
+      linkedIn,
+      location,
+    });
 
     // console.log(conference.business_card);
 
@@ -535,14 +533,11 @@ router.post("/acceptedInvitation", async (req, res) => {
 
     await conference.save();
 
-
-
     res.status(200).json({ message: "Business card added successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 router.post("/sendInvitation", async (req, res) => {
   try {
@@ -603,9 +598,8 @@ router.post("/sendInvitation", async (req, res) => {
           existing.email === attendee.email
       );
 
-
       if (isInFalse || isInTrue || isinTotal) {
-      // if (isInFalse || isInTrue) {
+        // if (isInFalse || isInTrue) {
         validationErrors.push({
           index: i,
           attendee,
@@ -613,7 +607,6 @@ router.post("/sendInvitation", async (req, res) => {
         });
         continue;
       }
-
 
       // If all validations pass, add to valid attendees
       validAttendees.push({
@@ -623,14 +616,12 @@ router.post("/sendInvitation", async (req, res) => {
       });
     }
 
-
     // Add valid attendees to conference
     if (validAttendees.length > 0) {
       conference.totalAttendee.push(...validAttendees);
       // conference.totalAttendee.push(...validAttendees);
       await conference.save();
     }
-
 
     // Prepare response
     const response = {
@@ -664,9 +655,6 @@ router.post("/sendInvitation", async (req, res) => {
     });
   }
 });
-
-
-
 
 // ------------------------------------------------------------------------------------
 
@@ -780,7 +768,6 @@ router.post("/registerAttendees", async (req, res) => {
   }
 });
 
-
 // ------------------------------------------------------------------------------
 
 // router.post("/add-attendee-for-event", async (req, res) => {
@@ -840,28 +827,27 @@ router.post("/registerAttendees", async (req, res) => {
 //   }
 // });
 
-
-
 router.post("/add-attendee-for-event", async (req, res) => {
   const { conferenceCode, eventCode, email } = req.body;
 
-
-  if (!eventCode ||  !email || !conferenceCode) {
-    return res.status(400).json({ 
-      error: "conferenceCode, eventCode,  and email are required" 
-    })
+  if (!eventCode || !email || !conferenceCode) {
+    return res.status(400).json({
+      error: "conferenceCode, eventCode,  and email are required",
+    });
   }
 
   try {
     // Find the specific conference
     const conference = await Conference.findOne({ conferenceCode });
-    
+
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
     }
 
     // const attendee = conference.totalAttendee.find({ email });
-    const attendee = conference.totalAttendee.find(att => att.email === email);
+    const attendee = conference.totalAttendee.find(
+      (att) => att.email === email
+    );
     if (!attendee) {
       return res.status(404).json({ error: "Attendee not found" });
     }
@@ -873,7 +859,9 @@ router.post("/add-attendee-for-event", async (req, res) => {
 
     // Search for the event in the conference's events
     for (const [mapKey, eventArray] of conference.events) {
-      const eventExists = eventArray.some(event => event.eventCode === eventCode);
+      const eventExists = eventArray.some(
+        (event) => event.eventCode === eventCode
+      );
       if (eventExists) {
         foundEventKey = mapKey;
         foundEventArray = eventArray;
@@ -882,23 +870,29 @@ router.post("/add-attendee-for-event", async (req, res) => {
     }
 
     if (!foundEventArray) {
-      return res.status(404).json({ error: "Event not found for the given eventCode" });
+      return res
+        .status(404)
+        .json({ error: "Event not found for the given eventCode" });
     }
 
     // Find the specific event in the array
-    const eventIndex = foundEventArray.findIndex(event => event.eventCode === eventCode);
-    
+    const eventIndex = foundEventArray.findIndex(
+      (event) => event.eventCode === eventCode
+    );
+
     if (eventIndex === -1) {
       return res.status(404).json({ error: "Event not found" });
     }
 
     // Check if attendee already exists
-    const isAlreadyAttendee = foundEventArray[eventIndex].attendeesTrueForEvent.some(
-      (attendee) => attendee.username === username
-    );
+    const isAlreadyAttendee = foundEventArray[
+      eventIndex
+    ].attendeesTrueForEvent.some((attendee) => attendee.username === username);
 
     if (isAlreadyAttendee) {
-      return res.status(400).json({ error: "Attendee is already registered for this event" });
+      return res
+        .status(400)
+        .json({ error: "Attendee is already registered for this event" });
     }
 
     // Add the new attendee
@@ -906,7 +900,7 @@ router.post("/add-attendee-for-event", async (req, res) => {
       username,
       name,
       email,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Update the event array in the Map
@@ -920,16 +914,13 @@ router.post("/add-attendee-for-event", async (req, res) => {
       eventCode,
       conferenceName: conference.name,
       conferenceCode: conference.conferenceCode,
-      attendee: { username, name, email }
+      attendee: { username, name, email },
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
 
 // router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
 //   const { conferenceCode, eventCode } = req.params;
@@ -963,8 +954,6 @@ router.post("/add-attendee-for-event", async (req, res) => {
 //   }
 // });
 
-
-
 router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
   const { conferenceCode, eventCode } = req.params;
 
@@ -991,7 +980,9 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
     }
 
     if (!foundEvent) {
-      return res.status(404).json({ error: "Event not found for the given eventCode" });
+      return res
+        .status(404)
+        .json({ error: "Event not found for the given eventCode" });
     }
 
     return res.status(200).json({
@@ -1004,40 +995,36 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
   }
 });
 
-
-
-
 // ---------------------------------------------------------------------------
-
 
 // Get events for a specific conference
 router.get("/get-conference-events/", async (req, res) => {
   const { conferenceCode } = req.params;
- 
+
   try {
     const conference = await Conference.findOne({ conferenceCode });
- 
+
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
     }
- 
+
     let conferenceEvents = [];
- 
+
     // Iterate through the events Map
     for (const [mapKey, eventArray] of conference.events) {
-      const eventsWithDetails = eventArray.map(event => ({
+      const eventsWithDetails = eventArray.map((event) => ({
         title: event.title,
         time: event.time,
         venue: event.venue,
         eventCode: event.eventCode,
-        totalAttendees: event.attendeesTrueForEvent?.length || 0
+        totalAttendees: event.attendeesTrueForEvent?.length || 0,
       }));
       conferenceEvents = [...conferenceEvents, ...eventsWithDetails];
     }
- 
+
     // Sort events by title
     conferenceEvents.sort((a, b) => a.title.localeCompare(b.title));
- 
+
     // return res.status(200).json({
     //   conferenceName: conference.name,
     //   conferenceCode: conference.conferenceCode,
@@ -1049,26 +1036,20 @@ router.get("/get-conference-events/", async (req, res) => {
     // });
 
     return res.status(200).json(conferenceEvents);
- 
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
- });
+});
 
-
-
- router.get("/get-business-card2", async (req, res) => {
+router.get("/get-business-card2", async (req, res) => {
   try {
     const { conferenceCode } = req.params;
-    const conference = await Conference.findOne
-      ({ conferenceCode });
+    const conference = await Conference.findOne({ conferenceCode });
 
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
-
     }
-
 
     const businessCard = conference.business_card || [];
 
@@ -1103,6 +1084,15 @@ router.put("/move-attendee", async (req, res) => {
       (attendee) => attendee.username === username
     );
 
+    const atendeeTrueIndex = conference.attendeesTrue.findIndex(
+      (attendee) => attendee.username === username
+    );
+
+    if (atendeeTrueIndex === -1) {
+      return res
+        .status(404)
+        .json({ error: `Attendance for ${username} already marked` });
+    }
 
     if (attendeeIndex === -1) {
       return res
@@ -1118,7 +1108,7 @@ router.put("/move-attendee", async (req, res) => {
     await conference.save();
 
     res.status(200).json({
-      message: "Attendee moved successfully",
+      message: `Attendance for ${username} marked successfully`,
       attendee,
     });
   } catch (error) {
