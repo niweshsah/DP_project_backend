@@ -816,6 +816,39 @@ router.post("/add-attendee-for-event", async (req, res) => {
   }
 });
 
+
+
+router.get("/get-attendees-for-event/:conferenceCode/:eventCode", async (req, res) => {
+  const { conferenceCode, eventCode } = req.params;
+
+  try {
+    // Find the conference by its code
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    // Access the specific event using the eventCode
+    const event = conference.events.get(eventCode);
+
+    if (!event) {
+      return res.status(404).json({ error: "Event not found for the given eventCode" });
+    }
+
+    // Retrieve attendeesTrueForEvent
+    const attendeesTrueForEvent = event.attendeesTrueForEvent;
+
+    return res.status(200).json({
+      eventCode,
+      attendeesTrueForEvent,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // -----------------------------------------------------------------------------------------------
 
 // Route t  fo move a user from `attendeesFalse` to `attendeesTrue`
