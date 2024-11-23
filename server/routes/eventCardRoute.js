@@ -1118,7 +1118,7 @@ router.post("/move-attendee", async (req, res) => {
       (attendee) => attendee.username === username
     );
 
-    if (atendeeTrueIndex === -1) {
+    if (atendeeTrueIndex !== -1) {
       return res
         .status(404)
         .json({ error: `Attendance for ${username} already marked` });
