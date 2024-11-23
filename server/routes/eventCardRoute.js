@@ -818,6 +818,40 @@ router.post("/add-attendee-for-event", async (req, res) => {
 
 
 
+// router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
+//   const { conferenceCode, eventCode } = req.params;
+
+//   try {
+//     // Find the conference by its code
+//     const conference = await Conference.findOne({ conferenceCode });
+
+//     if (!conference) {
+//       return res.status(404).json({ error: "Conference not found" });
+//     }
+//     console.log(conference.events)
+
+//     // Access the specific event using the eventCode
+//     const event = conference.events.get(eventCode);
+
+//     if (!event) {
+//       return res.status(404).json({ error: "Event not found for the given eventCode" });
+//     }
+
+//     // Retrieve attendeesTrueForEvent
+//     const attendeesTrueForEvent = event.attendeesTrueForEvent;
+
+//     return res.status(200).json({
+//       eventCode,
+//       attendeesTrueForEvent,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
+
+
 router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
   const { conferenceCode, eventCode } = req.params;
 
@@ -829,15 +863,23 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
       return res.status(404).json({ error: "Conference not found" });
     }
 
-    // Access the specific event using the eventCode
-    const event = conference.events.get(eventCode);
+    console.log(conference.events); // Debug log to inspect the structure of events
 
-    if (!event) {
-      return res.status(404).json({ error: "Event not found for the given eventCode" });
+    // Search for the event by eventCode in all date entries
+    let attendeesTrueForEvent = null;
+    let foundEvent = null;
+
+    for (const [date, events] of conference.events) {
+      foundEvent = events.find((event) => event.eventCode === eventCode);
+      if (foundEvent) {
+        attendeesTrueForEvent = foundEvent.attendeesTrueForEvent;
+        break; // Exit loop once the event is found
+      }
     }
 
-    // Retrieve attendeesTrueForEvent
-    const attendeesTrueForEvent = event.attendeesTrueForEvent;
+    if (!foundEvent) {
+      return res.status(404).json({ error: "Event not found for the given eventCode" });
+    }
 
     return res.status(200).json({
       eventCode,
@@ -848,6 +890,9 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
+
 
 // -----------------------------------------------------------------------------------------------
 
