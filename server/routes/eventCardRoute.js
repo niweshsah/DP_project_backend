@@ -820,7 +820,7 @@ router.post("/registerAttendees", async (req, res) => {
 
 
 router.post("/add-attendee-for-event", async (req, res) => {
-  const { eventCode, username, name, email } = req.body;
+  const {conferenceCode, eventCode, username, name, email } = req.body;
 
   if (!eventCode || !username || !name || !email) {
     return res.status(400).json({ 
@@ -830,10 +830,14 @@ router.post("/add-attendee-for-event", async (req, res) => {
 
   try {
     // Find all conferences
-    const conferences = await Conference.find({});
+    const conferences = await Conference.findOne({conferenceCode});
     let foundConference = null;
     let foundEventKey = null;
     let foundEventArray = null;
+
+    if(!conferences){
+      
+    }
 
     // Search for the event across all conferences
     for (const conference of conferences) {
