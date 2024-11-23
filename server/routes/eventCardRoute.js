@@ -768,6 +768,7 @@ router.post("/registerAttendees", async (req, res) => {
   }
 });
 
+
 // ------------------------------------------------------------------------------
 
 // router.post("/add-attendee-for-event", async (req, res) => {
