@@ -274,7 +274,7 @@ router.get("/attendees-false", async (req, res) => {
     if (!conference) {
       return res.status(404).json({ error: "Conference not found" });
     }
-    // payload;
+
 
     const attendeesFalse = conference.attendeesFalse || [];
     const count = attendeesFalse.length;
