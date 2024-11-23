@@ -3,7 +3,8 @@ require("dotenv").config(); // to use the .env file
 
 
 // mongo_url = 'mongodb+srv://sahniwesh:Cg1pipueVvULDzdk@testing.4soqq.mongodb.net/hotel_testing_router';
-mongo_url = process.env.MONGO_URL || 'mongodb+srv://sahniwesh:Cg1pipueVvULDzdk@testing.4soqq.mongodb.net/attendance_tracker';
+
+mongo_url = process.env.MONGO_URL;
 
 
 mongoose.connect(mongo_url, {
