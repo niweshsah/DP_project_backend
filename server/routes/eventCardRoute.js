@@ -768,7 +768,6 @@ router.post("/registerAttendees", async (req, res) => {
   }
 });
 
-
 // ------------------------------------------------------------------------------
 
 // router.post("/add-attendee-for-event", async (req, res) => {
@@ -996,6 +995,36 @@ router.get("/get-attendees-for-event/:eventCode", async (req, res) => {
   }
 });
 
+router.get("/attendees-not-accepted", async (req, res) => {
+  try {
+    const { conferenceCode } = req.params;
+
+    // Find the conference by its conferenceCode
+    const conference = await Conference.findOne({ conferenceCode });
+
+    if (!conference) {
+      return res.status(404).json({ error: "Conference not found" });
+    }
+
+    const attendeeAccepted = conference.attendeeAccepted || [];
+    const totalAttendee = conference.totalAttendee || [];
+
+    const attendeesNotAccepted = totalAttendee.filter(
+      (attendee) =>
+        !attendeeAccepted.some(
+          (acceptedAttendee) => acceptedAttendee.username === attendee.username
+        )
+    );
+
+    const count = attendeesNotAccepted.length;
+
+    return res
+      .status(200)
+      .json({ count: count, attendees: attendeesNotAccepted });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
 // ---------------------------------------------------------------------------
 
 // Get events for a specific conference
