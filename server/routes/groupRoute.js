@@ -13,6 +13,15 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/testing", async (req, res) => {
+  try {
+    res.status(200).send({ error: "Group route is working" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+}
+);
+
 // Get all groups
 router.get("/", async (req, res) => {
   try {
