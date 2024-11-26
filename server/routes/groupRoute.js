@@ -32,6 +32,21 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/listofgroups", async (req, res) => {
+  try {
+    const groups = await Group.find();
+    const groupsList = [];
+    groups.forEach((group) => {
+      groupsList.push(group.Group_number);
+    });
+
+    res.status(200).send(groupsList);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+}
+);
+
 // Get a group by ID
 router.get("/:groupNumber", async (req, res) => {
   try {
