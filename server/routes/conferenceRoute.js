@@ -249,6 +249,8 @@ router.use('/:conferenceId/SlidingImages', SlidingImagesRoute);
 const EventCardRoute = require('../routes/eventCardRoute');
 router.use('/:conferenceCode/eventCard', EventCardRoute);
 
+const GroupRoute = require('../routes/groupRoute');
+router.use('/:conferenceCode/groups', GroupRoute);
 
 
 // const EmailRouter = require("../utils/sendEmail");
