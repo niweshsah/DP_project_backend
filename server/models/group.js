@@ -7,6 +7,12 @@ const groupSchema = new mongoose.Schema({
     required: true,
   },
 
+  project_name: {
+    type: String,
+    required: true,
+  },
+  
+
 
   likes: {
     type: Number,
@@ -23,7 +29,7 @@ const groupSchema = new mongoose.Schema({
     },
   ],
 
-  
+
 
   image: [
     {
