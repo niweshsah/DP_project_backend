@@ -19,8 +19,7 @@ router.get("/testing", async (req, res) => {
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
-}
-);
+});
 
 // Get all groups
 router.get("/", async (req, res) => {
@@ -37,21 +36,23 @@ router.get("/groupList", async (req, res) => {
     const groups = await Group.find();
     const groupsList = [];
     groups.forEach((group) => {
-      groupsList.push(group.Group_number);
+      groupsList.push({
+        Group_number: group.Group_number,
+        project_name: group.project_name,
+      });
     });
 
     res.status(200).send(groupsList);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
-}
-);
+});
 
 // Get a group by ID
 router.get("/:groupNumber", async (req, res) => {
   try {
     const group = await Group.findOne({ groupNumber: req.params.groupNumber });
-    
+
     if (!group) {
       return res.status(404).send({ error: "Group not found" });
     }
@@ -101,7 +102,6 @@ router.put("/:groupNumber/like-count", async (req, res) => {
   try {
     const group = await Group.findOne({ groupNumber: req.params.groupNumber });
 
-
     if (!group) {
       return res.status(404).send({ error: "Group not found" });
     }
@@ -112,8 +112,6 @@ router.put("/:groupNumber/like-count", async (req, res) => {
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
-}
-);
-
+});
 
 module.exports = router;
