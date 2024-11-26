@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/listofgroups", async (req, res) => {
+router.get("/groupList", async (req, res) => {
   try {
     const groups = await Group.find();
     const groupsList = [];
