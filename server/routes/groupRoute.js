@@ -49,9 +49,9 @@ router.get("/groupList", async (req, res) => {
 });
 
 // Get a group by ID
-router.get("/:groupNumber", async (req, res) => {
+router.get("/:Group_number", async (req, res) => {
   try {
-    const group = await Group.findOne({ groupNumber: req.params.groupNumber });
+    const group = await Group.findOne({ Group_number: req.params.Group_number });
 
     if (!group) {
       return res.status(404).send({ error: "Group not found" });
@@ -63,7 +63,7 @@ router.get("/:groupNumber", async (req, res) => {
 });
 
 // Update a group by ID
-router.put("/:groupNumber", async (req, res) => {
+router.put("/:Group_number", async (req, res) => {
   try {
     // const group = await Group.findByIdAndUpdate(req.params.id, req.body, {
     //   new: true,
@@ -71,7 +71,7 @@ router.put("/:groupNumber", async (req, res) => {
     // });
 
     const group = await Group.findOneAndUpdate(
-      { groupNumber: req.params.groupNumber },
+      { Group_number: req.params.Group_number },
       req.body,
       { new: true, runValidators: true }
     );
