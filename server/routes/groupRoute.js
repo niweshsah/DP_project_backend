@@ -98,7 +98,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:Group_number/like-count-increase", async (req, res) => {
+router.post("/:Group_number/like-count-increase", async (req, res) => {
   try {
     const group = await Group.findOne({ Group_number: req.params.Group_number });
     // console.log({"GroupNo":req.params.Group_number});
