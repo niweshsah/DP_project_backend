@@ -98,15 +98,23 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:groupNumber/like-count-increase", async (req, res) => {
+router.put("/:Group_number/like-count-increase", async (req, res) => {
   try {
-    const group = await Group.findOne({ groupNumber: req.params.groupNumber });
+    const group = await Group.findOne({ Group_number: req.params.Group_number });
+    // console.log({"GroupNo":req.params.Group_number});
+
 
     if (!group) {
       return res.status(404).send({ error: "Group not found" });
     }
+    // console.log(group.likes);
+    console.log({"likeCount1":group.likes});
 
-    group.likeCount += 1;
+    group.likes += 1;
+    // console.log(group.likes);
+    console.log({"likeCount2":group.likes});
+
+
     await group.save();
     res.status(200).send(group);
   } catch (error) {
@@ -114,15 +122,16 @@ router.put("/:groupNumber/like-count-increase", async (req, res) => {
   }
 });
 
-router.put("/:groupNumber/like-count-decrease", async (req, res) => {
+router.put("/:Group_number/like-count-decrease", async (req, res) => {
   try {
-    const group = await Group.findOne({ groupNumber: req.params.groupNumber });
+    const group = await Group.findOne({ Group_number: req.params.Group_number });
+    console.log(Group_number);
 
-    if (!group) {
+    if (!group) { 
       return res.status(404).send({ error: "Group not found" });
     }
 
-    group.likeCount -= 1;
+    group.likes -= 1;
     await group.save();
     res.status(200).send(group);
   } catch (error) {
