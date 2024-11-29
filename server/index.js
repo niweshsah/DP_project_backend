@@ -3,7 +3,7 @@ const app = express(); // create a new instance of express
 const db = require("./db"); // importing db.js
 require("dotenv").config(); // to use the .env file
 
-const port = process.env.PORT || 27017; // set the port number
+const port = process.env.PORT || 3000; // set the port number
 
 const bodyParser = require("body-parser"); // importing body-parser
 app.use(bodyParser.json()); // use body-parser
