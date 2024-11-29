@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const groupSchema = new mongoose.Schema({
-
   Group_number: {
     type: Number,
     required: true,
@@ -11,17 +10,13 @@ const groupSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  
-
 
   likes: {
     type: Number,
     default: 0,
   },
 
-
   Description: String,
-
 
   Faculty: [
     {
@@ -29,14 +24,11 @@ const groupSchema = new mongoose.Schema({
     },
   ],
 
-
-
   image: [
     {
       type: String,
     },
   ],
-
 
   members: [
     {
@@ -52,7 +44,11 @@ const groupSchema = new mongoose.Schema({
     },
   ],
 
-
+  emailUsed: {
+    type: String,
+    // required: true,
+    default: "No email provided",
+  },
 });
 
 const Group = mongoose.model("Group", groupSchema);
